@@ -22,7 +22,7 @@ public class Deck
 			for (Card.Suit s : Card.Suit.values()) 
 			{
 				cards[count++] = new Card(r, s,i);
-				//System.out.println(r);System.out.println(s);System.out.println(i);
+				//System.out.print(r+" ");System.out.print(s+" ");System.out.println(i);
 				i++;
 			}
 		}

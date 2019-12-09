@@ -5,15 +5,17 @@ import it.unical.mat.embasp.languages.Param;
 
 
 @Id("moveToF")
-public class MoveToF extends  MovableInCo 
+public class MoveToF extends MovableInCo
 {
 	//private int cardId;
 	@Param(1)
 	private int finish;
 	
+	public MoveToF() {}
+	
 	public MoveToF(int id,int f)
 	{
-		super(id);
+		super(id,f);
 		this.finish=f;
 	}
 

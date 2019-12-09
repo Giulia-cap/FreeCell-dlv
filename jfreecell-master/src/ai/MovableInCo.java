@@ -9,10 +9,23 @@ public class MovableInCo
 {
 	@Param(0)
 	private int cardId;
+	@Param(0)
+	private int colId;
 	
-	public MovableInCo(int id)
+	public MovableInCo() {}
+	
+	public MovableInCo(int id,int idc)
 	{
 		this.cardId=id;
+		this.colId=idc;
+	}
+
+	public int getColId() {
+		return colId;
+	}
+
+	public void setColId(int colId) {
+		this.colId = colId;
 	}
 
 	public int getCardId() {

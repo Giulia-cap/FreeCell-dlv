@@ -1,68 +1,16 @@
-card(1,"CLUBS", 1).
-card(2, "CLUBS", 2).
-card(3, "CLUBS", 3).
-card(4, "CLUBS", 4).
-card(5, "CLUBS", 5).
-card(6, "CLUBS", 6).
-card(7, "CLUBS", 7).
-card(8, "CLUBS", 8).
-card(9, "CLUBS", 9).
-card(10, "CLUBS", 10).
-card(11, "CLUBS", 11).
-card(12, "CLUBS", 12).
-card(13, "CLUBS", 13).
-
-card(14, "DIAMONDS", 1).
-card(15, "DIAMONDS", 2).
-card(16, "DIAMONDS", 3).
-card(17, "DIAMONDS", 4).
-card(18, "DIAMONDS", 5).
-card(19, "DIAMONDS", 6).
-card(20, "DIAMONDS", 7).
-card(21, "DIAMONDS", 8).
-card(22, "DIAMONDS", 9).
-card(23, "DIAMONDS", 10).
-card(24, "DIAMONDS", 11).
-card(25, "DIAMONDS", 12).
-card(26, "DIAMONDS", 13).
-
-card(27, "HEARTS", 1).
-card(28, "HEARTS", 2).
-card(29, "HEARTS", 3).
-card(30, "HEARTS", 4).
-card(31, "HEARTS", 5).
-card(32, "HEARTS", 6).
-card(33, "HEARTS", 7).
-card(34, "HEARTS", 8).
-card(35, "HEARTS", 9).
-card(36, "HEARTS", 10).
-card(37, "HEARTS", 11).
-card(38, "HEARTS", 12).
-card(39, "HEARTS", 13).
-
-card(40, "SPADES" , 1).
-card(41, "SPADES" , 2).
-card(42, "SPADES" , 3).
-card(43, "SPADES" , 4).
-card(44, "SPADES" , 5).
-card(45, "SPADES" , 6).
-card(46, "SPADES" , 7).
-card(47, "SPADES" , 8).
-card(48, "SPADES" , 9).
-card(49, "SPADES" , 10).
-card(50, "SPADES" , 11).
-card(51, "SPADES" , 12).
-card(52, "SPADES" , 13).
-
-
-moveToCe(C,X):-cell(C,X).
-
-%moveToCe(C,X)|nmoveToCe(C,X):-spostabileInCe(C),cell(C1,X).
-%moveToCe(C,X)|nmoveToCe(C,X):-card(C,S,V),cell(C1,X).
-%moveToF(C,F)|nmoveToF(C,F):-spostabileinF(C),finishedCell(_,_,F).
+moveToCe(C,X) | noToCe(C,X):-spostabileInCe(C),cell(C1,X).
+moveToFi(C,F) | noToFi(C,F):-spostabileInF(C,F).
 
 %regole non scritte
-%:-moveToCe(C,X),moveToF(C1,F).
-%:-moveToCe(C,X),moveToCe(C1,X1),C!=C1.
-%:~moveToCe(cardId,id). [1@1,cardId,id]
+mossa(C):-moveToCe(C,X).
+mossa(C):-moveToFi(C,F).
+
+%devo fare esattamnete una sola mossa 
+:-#count{C:mossa(C)}<1.
+:-#count{C:mossa(C)}>1.
+
+
+%se posso mettere una carta nelle finish devo metterla (decidere se fare un preferirei)
+:-spostabileInF(C,F),moveToCe(C1,X).
+
 

@@ -24,7 +24,9 @@ public class FinishedCell extends JPanel implements CardDestination {
 	private Suit suit;
 	@Param(2)
 	private int id;
-
+	
+	public FinishedCell() {}
+	
 	public FinishedCell(int tC,Suit su,int id) 
 	{
 		super();
@@ -66,13 +68,12 @@ public class FinishedCell extends JPanel implements CardDestination {
 	
 	public boolean canAdd(Card card) {
 		int currentRank = (topC == null) ? 0 : topC.getRank();
-		
-		if (card.getRank() == currentRank + 1) {
+		if(currentRank==0 && card.getRank()==1) return true;
+		if (card.getRank() == currentRank + 1) { 
 			if (suit == null || card.getSuit() == suit) {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	

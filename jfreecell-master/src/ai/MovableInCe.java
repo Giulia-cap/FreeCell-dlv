@@ -14,6 +14,9 @@ public class MovableInCe
 	@Param(0)
 	private int cardId1;
 	
+	public MovableInCe()
+	{
+	}
 	
 	public MovableInCe(int id)
 	{

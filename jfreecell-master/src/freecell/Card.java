@@ -15,7 +15,7 @@ import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
 
 @Id("card") 
-public class Card extends MovableInCo
+public class Card /*extends MovableInCo*/
 {
 	public static enum Suit { 
 		CLUBS, DIAMONDS, HEARTS, SPADES;
@@ -41,15 +41,17 @@ public class Card extends MovableInCo
 		suitImages.put(Suit.SPADES, iSpades);
 	}
 	
-	@Param(0)
+	@Param(2)
 	private int rank;
 	@Param(1)
 	private Suit suit;
-	//@Param(2)
+	@Param(0)
 	private int  id;
 	
+	public Card() {}
+	
 	public Card(int rank, Suit suit,int id) {
-		super(id);
+		//super(id);
 		if (rank < 1 || rank > 13) {
 			throw new IllegalArgumentException();
 		}

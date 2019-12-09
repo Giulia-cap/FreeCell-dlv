@@ -15,6 +15,9 @@ public class MoveToCe /*extends  MovableInCo */
 	private int ca;
 	@Param(1)
 	private int ce;
+	
+	public MoveToCe() {}
+		
 	public MoveToCe(int cards,int cell)
 	{
 		//super(cards);

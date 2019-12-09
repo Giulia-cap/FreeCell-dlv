@@ -22,6 +22,8 @@ public class Cell extends JPanel implements CardSource, CardDestination {
 	
 	private boolean selected;
 	
+	public Cell() {}
+	
 	public Cell(int idCarta,int id) 
 	{
 		super();

@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import ai.MovableInCe;
+import ai.MovableInCo;
 import ai.MovableInF;
 import ai.MoveToCe;
 import ai.MoveToF;
@@ -46,6 +47,7 @@ public class FreeCell extends JFrame /*implements MouseListener*/ {
 	
 	private CardSource selectedSource;
 	private static String encodingResource="encodings/freeCell";
+	private static String instanceResource="encodings/instance";
 	public InputProgram facts;
 	
 	public FreeCell() 
@@ -142,31 +144,55 @@ public class FreeCell extends JFrame /*implements MouseListener*/ {
 	private void findMovableCards()  // per ora prende solo le ultime carte 
 	{
 	//	movCe=null; int pos=0; movF=null; int pos2=0;
-		for(int i=0;i<4;i++)
+		boolean cellaVuota=false;
+		for(int j=0;j<4;j++) 
+		{
+			if(cells[j].getIdCarta()==53) 
+			{
+				 cellaVuota=true;
+				 break;
+			}
+		}
+		
+		for(int i=0;i<8;i++)
 		{
 			Card c=columns[i].getCards().getLast();
-			for(int j=0;j<4;j++) 
+			//se c'è almeno una cella vuota le ultime carte possono essere spostate li
+			if(cellaVuota)
 			{
-				if(cells[j].getIdCarta()==53) 
-				{
-					try {
+				try {
 					facts.addObjectInput(new MovableInCe(c.getId()));
 					}
 					catch (Exception e) {
 						e.printStackTrace();
 						}
-					}
-			/*	if(c.getRank()==1 || (c.getSuit()==finishedCells[j].getSuit() && finishedCells[j].getSuit()!=null && (c.getRank()==(finishedCells[j].getTopC().getRank()+1) )))
+			}
+			//controllo se la carta può essere inserita nelle finished cell
+			for(int j=0;j<4;j++)
+			{
+				if(finishedCells[j].canAdd(c))
 				{
 					try {
-						facts.addObjectInput(new MovableInF(c.getId()));
+						facts.addObjectInput(new MovableInF(c.getId(),finishedCells[j].getId()));
 						//movF[pos2]=new MovableInF(c.getId(),columns[i]);pos2++;
 						}
 					catch (Exception e) {
 						e.printStackTrace();}
-				}*/
+				}
+					
+			}
+			//controllo se la carta può essere spostata in colonna (per ora controlla solo l'ultima
+			for(int co=0;co<8;co++)
+			{
+				if(columns[co].canAdd(columns[i].getCards().getLast()))
+					try {
+						facts.addObjectInput(new MovableInCo(c.getId(),columns[co].getColumn()));
+						}
+					catch (Exception e) {
+						e.printStackTrace();}
 			}
 		}
+
 	}
 	
 	private void findSolution()
@@ -175,8 +201,15 @@ public class FreeCell extends JFrame /*implements MouseListener*/ {
 		InputProgram encoding= new ASPInputProgram(); 
 		//encoding.addProgram(getEncodings(encodingResource));
 		encoding.addFilesPath(encodingResource);
+		encoding.addFilesPath(instanceResource);
 		handler.addProgram(encoding);
 		
+		try {
+			ASPMapper.getInstance().registerClass(MoveToCe.class); 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		
 		Output o =  handler.startSync();
@@ -184,21 +217,21 @@ public class FreeCell extends JFrame /*implements MouseListener*/ {
 		
 		
 		System.out.println(facts.getPrograms());
-	
+		System.out.println(answers.getAnswersets());
+
 		for(AnswerSet a:answers.getAnswersets())
 		{ // per ogni as. il get restituisce un set di as in ordine di ottimalità
 			try {
 				for(Object obj:a.getAtoms()){
-					if(obj instanceof MoveToCe)  
-					{
+					if(obj instanceof MoveToCe)  {
 						MoveToCe move = (MoveToCe) obj;
 						System.out.print(move + " ");
 					}
 				}
+				System.out.println();
 			} catch (Exception e) {
 				e.printStackTrace();
-			} 
-			
+			} 			
 		}
 		
 	}
