@@ -41,11 +41,11 @@ public class Card /*extends MovableInCo*/
 		suitImages.put(Suit.SPADES, iSpades);
 	}
 	
-	@Param(2)
+	//@Param(2)
 	private int rank;
-	@Param(1)
+	//@Param(1)
 	private Suit suit;
-	@Param(0)
+	//@Param(0)
 	private int  id;
 	
 	public Card() {}

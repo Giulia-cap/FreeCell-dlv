@@ -1,16 +1,117 @@
-moveToCe(C,X) | noToCe(C,X):-spostabileInCe(C),cell(C1,X).
+card(1,"CLUBS", 1).           %fiori
+card(2, "DIAMONDS", 1).
+card(3, "HEARTS", 1). 
+card(4, "SPADES" , 1).      %picche  
+           
+card(5, "CLUBS", 2).
+card(6, "DIAMONDS", 2).
+card(7, "HEARTS", 2).
+card(8, "SPADES" , 2).
+
+card(9, "CLUBS", 3).
+card(10, "DIAMONDS", 3).
+card(11, "HEARTS", 3).
+card(12, "SPADES" , 3).
+
+card(13, "CLUBS", 4).
+card(14, "DIAMONDS", 4).
+card(15, "HEARTS", 4).
+card(16, "SPADES" , 4).
+
+card(17, "CLUBS", 5).
+card(18, "DIAMONDS", 5).
+card(19, "HEARTS", 5).
+card(20, "SPADES" , 5).
+
+card(21, "CLUBS", 6).
+card(22, "DIAMONDS", 6).
+card(23, "HEARTS", 6).
+card(24, "SPADES" , 6).
+
+card(25, "CLUBS", 7).
+card(26, "DIAMONDS", 7).
+card(27, "HEARTS", 7).
+card(28, "SPADES" , 7).
+
+card(29, "CLUBS", 8).
+card(30, "DIAMONDS", 8).
+card(31, "HEARTS", 8).
+card(32, "SPADES" , 8).
+
+card(33, "CLUBS", 9).
+card(34, "DIAMONDS", 9).
+card(35, "HEARTS", 9).
+card(36, "SPADES" , 9).
+
+card(37, "CLUBS", 10).
+card(38, "DIAMONDS", 10).
+card(39, "HEARTS", 10).
+card(40, "SPADES" , 10).
+
+card(41, "CLUBS", 11).
+card(42, "DIAMONDS", 11).
+card(43, "HEARTS", 11).
+card(44, "SPADES" , 11).
+
+card(45, "CLUBS", 12).
+card(46, "DIAMONDS", 12).
+card(47, "HEARTS", 12).
+card(48, "SPADES" , 12).
+
+card(49, "CLUBS", 13).
+card(50, "DIAMONDS", 13).
+card(51, "HEARTS", 13).
+card(52, "SPADES" , 13).
+
+
+moveToCe(C,X) | noToCe(C,X):-spostabileInCe(C),cell(C1,X),C1=53.
 moveToFi(C,F) | noToFi(C,F):-spostabileInF(C,F).
+moveToCo(Car,Col)|noToCo(Car,Col):-spostabileInCo(Car,Col).
+moveFromeCeToColumn(Cell,Column)|no(Cell,Column):-spostabileDaCellaAColonna(Cell,Column).
+moveFromeCeToFinish(Card,Finish)|noMo(Card,Finish):-spostabileDaCellaAFinish(Card,Finish).
 
 %regole non scritte
-mossa(C):-moveToCe(C,X).
-mossa(C):-moveToFi(C,F).
+mossa(C,X):-moveToCe(C,X).
+mossa(C,F):-moveToFi(C,F).
+mossa(C,F):-moveToCo(C,F).
+mossa(C,F):-moveFromeCeToColumn(C,F).
+mossa(C,F):-moveFromeCeToFinish(C,F).
 
 %devo fare esattamnete una sola mossa 
-:-#count{C:mossa(C)}<1.
-:-#count{C:mossa(C)}>1.
+:-#count{C,X:mossa(C,X)}<1.
+:-#count{C,X:mossa(C,X)}>1.
 
+%:-moveToCe(C,X),moveToCe(C1,X1),C!=C1.
 
-%se posso mettere una carta nelle finish devo metterla (decidere se fare un preferirei)
+%se posso mettere una carta nelle finish devo metterla 
 :-spostabileInF(C,F),moveToCe(C1,X).
+:-spostabileInF(C,F),moveToCo(Car,Col).
+:-spostabileInF(C,F),moveFromeCeToColumn(Cell,Column).
+
+%se posso togliere una carta dalle celle vuote, devo cercare di farlo
+:~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [2:1]
+
+% bisogna evitare il più possibile di occupare celle vuote
+:~moveToCe(C,X). [1:1]
+
+cartaCheLiberaUnAsso(C):-spostabileInCe(C),column(C,P,Column),column(C1,P1,Column),card(C1,S,1),P1=P-1.
+:~moveToCe(C,X), not cartaCheLiberaUnAsso(C). [1:1]
+
+%dal momento in cui decido di spostare in colonna devo preferire gli spostamanti che liberano assi
+colonnaConAssi(C):-column(Card,P,C),card(Card,S,1).
+:~moveToCo(Card,Column), not colonnaConAssi(Column). [3:1]
+
+% dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
+:~moveToCe(C,X),column(C,P,Column),not colonnaConAssi(Column). [1:1]
+
+%dal momento in cui decido di spostare in colonna devo preferire spostamenti che liberano carte da mettere in finish
+prossimaCarta(C):-finishedCell(Card,S,V),card(C,S,V1),V1=V+1.
+colonnaConProssima(Col):-column(C,P,Col),prossimaCarta(C).
+:~moveToCo(Card,Column), not colonnaConProssima(Column). [2:1]
+
+%dal momento in cui decido di spostare in cella devo preferire spostamenti che liberano carte da mettere in finish
+:~moveToCe(C,X),column(C,P,Column), not colonnaConProssima(Column). [2:1]
+
+
 
 

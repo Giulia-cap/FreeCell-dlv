@@ -21,12 +21,30 @@ public class FinishedCell extends JPanel implements CardDestination {
 	@Param(0)
 	private int top;
 	@Param(1) 
-	private Suit suit;
+	private String suitDlv;
 	@Param(2)
 	private int id;
 	
+	private Suit suit;
+	
 	public FinishedCell() {}
 	
+	public FinishedCell(int tC,String su,int id) 
+	{
+		this.top=tC;
+		this.suitDlv=su;
+		this.id=id; 
+	}
+	
+	
+	public String getSuitDlv() {
+		return suitDlv;
+	}
+
+	public void setSuitDlv(String suitDlv) {
+		this.suitDlv = suitDlv;
+	}
+
 	public FinishedCell(int tC,Suit su,int id) 
 	{
 		super();
@@ -52,25 +70,44 @@ public class FinishedCell extends JPanel implements CardDestination {
 	}
 
 
-	public void add(Card card) {
+	public void add(Card card) 
+	{
 		if (!canAdd(card)) {
 			throw new IllegalArgumentException();
 		}
 		
-		if (suit == null) {
+		//if (suit == null) {
 			suit = card.getSuit();
-		}
+		//}
 		
 		topC = card;
+		top=card.getId();
+		
+		
+		String s="ciao";
+		if(card.getSuit()==Suit.CLUBS)
+			s="CLUBS";
+		else if((card.getSuit()==Suit.DIAMONDS))
+			s="DIAMONDS";
+		else if((card.getSuit()==Suit.HEARTS))
+			s="HEARTS";
+		else if((card.getSuit()==Suit.SPADES))
+			s="SPADES";
+		
+		suitDlv=s;
 		
 		repaint();
 	}
 	
-	public boolean canAdd(Card card) {
+	public boolean canAdd(Card card) 
+	{
 		int currentRank = (topC == null) ? 0 : topC.getRank();
 		if(currentRank==0 && card.getRank()==1) return true;
-		if (card.getRank() == currentRank + 1) { 
-			if (suit == null || card.getSuit() == suit) {
+		if (card.getRank() == currentRank + 1) 
+		{ 
+			if (suit == null || card.getSuit() == suit) 
+			{
+				System.out.println("entrooooooooooooooooooooooooooooooooooooo");
 				return true;
 			}
 		}
@@ -132,6 +169,6 @@ public class FinishedCell extends JPanel implements CardDestination {
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
 	
 }

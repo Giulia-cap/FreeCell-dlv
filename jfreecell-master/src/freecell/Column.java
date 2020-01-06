@@ -24,12 +24,15 @@ public class Column extends JPanel implements CardSource, CardDestination {
 	@Param(2)
 	private int column;
 	
+	public Column() {} 
 	
-	public Column() {
+	public Column(int id) 
+	{
 		super();
 		
 		cards = new LinkedList<Card>();
 		selected = false;
+		this.column=id;
 		
 		updateSize();
 	}
@@ -42,6 +45,7 @@ public class Column extends JPanel implements CardSource, CardDestination {
 		this.position=pos;
 		this.column=id;
 		//updateSize();
+		//System.out.println(column);
 	}
 	
 	
@@ -63,7 +67,7 @@ public class Column extends JPanel implements CardSource, CardDestination {
 	}
 	
 	public Card peek() {
-		return cards.peekLast();
+		return cards.peekLast();  //ritorna l'ultimo elemento della lista
 	}
 	
 	public boolean canRemove() {
@@ -91,25 +95,24 @@ public class Column extends JPanel implements CardSource, CardDestination {
 		repaint();
 	}
 	
-	public boolean canAdd(Card card) {
+	public boolean canAdd(Card card) 
+	{
 		if (cards.isEmpty()) {
 			return true;
 		}
 		else
 		{
-			Card bottom = cards.peekLast();
+			Card bottom = cards.peekLast(); //mi salvo l'ultima carta della lista
 			if (bottom.getColor() != card.getColor() &&
-					bottom.getRank() == card.getRank() + 1) {
-				return true;
-			}
+					bottom.getRank() == card.getRank() + 1) { //System.out.println("id colonna: "+column);
+				return true;}
 			else
-			{
 				return false;
-			}
 		}
 	}
 	
-	public void initAdd(Card card) {
+	public void initAdd(Card card) 
+	{
 		cards.add(card);
 		
 		updateSize();
@@ -124,7 +127,8 @@ public class Column extends JPanel implements CardSource, CardDestination {
 		repaint();
 	}
 	
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) 
+	{
 		g.setColor(FreeCell.BACKGROUND_COLOR);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
@@ -141,7 +145,8 @@ public class Column extends JPanel implements CardSource, CardDestination {
 		}
 	}
 	
-	private void updateSize() {
+	private void updateSize() 
+	{
 		int height = cards.size() == 0 ? 120 : 120 + ((cards.size() - 1) * 30);
 		Dimension size = new Dimension(80, height);
 		setSize(size);
@@ -173,12 +178,20 @@ public class Column extends JPanel implements CardSource, CardDestination {
 	}
 
 
-	public int getColumn() {
+	public int getColumn() { //System.out.println("id colonna: "+column);
 		return column;
 	}
 
 
 	public void setColumn(int column) {
 		this.column = column;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 }

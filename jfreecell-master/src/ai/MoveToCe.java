@@ -1,7 +1,5 @@
 package ai;
 
-
-import freecell.Card;
 import freecell.Column;
 import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
@@ -15,7 +13,7 @@ public class MoveToCe /*extends  MovableInCo */
 	private int ca;
 	@Param(1)
 	private int ce;
-	
+
 	public MoveToCe() {}
 		
 	public MoveToCe(int cards,int cell)
@@ -36,8 +34,26 @@ public class MoveToCe /*extends  MovableInCo */
 	public void setCa(int ca) {
 		this.ca = ca;
 	}
+	
+	public Column getColumn() {
+		return column;
+	}
+
+	public void setColumn(Column column) {
+		this.column = column;
+	}
+
+	public void setCe(int ce) {
+		this.ce = ce;
+	}
 	public int getCe() {
 		return ce;
+	}
+	
+	public String toString() {
+		String s = "";
+		s += "moveToCe(" + ca + "," + ce + ")";
+		return s;
 	}
 	
 }

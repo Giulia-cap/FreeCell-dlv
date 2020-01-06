@@ -1,6 +1,5 @@
 package ai;
 
-import freecell.Card;
 import freecell.Column;
 import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;

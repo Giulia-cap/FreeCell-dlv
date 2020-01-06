@@ -1,13 +1,13 @@
 package ai;
-import ai.MovableInCo;
 import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
 
 
-@Id("moveToF")
-public class MoveToF extends MovableInCo
+@Id("moveToFi")
+public class MoveToF 
 {
-	//private int cardId;
+	@Param(0)
+	private int cardId;
 	@Param(1)
 	private int finish;
 	
@@ -15,7 +15,7 @@ public class MoveToF extends MovableInCo
 	
 	public MoveToF(int id,int f)
 	{
-		super(id,f);
+		this.cardId=id;
 		this.finish=f;
 	}
 
@@ -25,6 +25,20 @@ public class MoveToF extends MovableInCo
 
 	public void setFinish(int finish) {
 		this.finish = finish;
+	}
+	
+	public int getCardId() {
+		return cardId;
+	}
+
+	public void setCardId(int cardId) {
+		this.cardId = cardId;
+	}
+	
+	public String toString() {
+		String s = "";
+		s += "moveToF(" + cardId + "," + finish + ")";
+		return s;
 	}
 
 }

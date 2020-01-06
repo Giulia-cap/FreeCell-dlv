@@ -7,14 +7,6 @@ import it.unical.mat.embasp.languages.Param;
 @Id("spostabileInF") 
 public class MovableInF 
 {
-	public Column getColumn() {
-		return column;
-	}
-
-	public void setColumn(Column column) {
-		this.column = column;
-	}
-
 	private Column column;
 	
 	@Param(0)
@@ -38,6 +30,15 @@ public MovableInF() {}
 	public void setCar(int cardId) {
 		this.car = cardId;
 	}
+	
+	public Column getColumn() {
+		return column;
+	}
+
+	public void setColumn(Column column) {
+		this.column = column;
+	}
+
 	public int getIdFinish() {
 		return idFinish;
 	}
@@ -45,4 +46,5 @@ public MovableInF() {}
 	public void setIdFinish(int idFinish) {
 		this.idFinish = idFinish;
 	}
+
 }

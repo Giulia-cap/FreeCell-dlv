@@ -48,6 +48,8 @@ public class Cell extends JPanel implements CardSource, CardDestination {
 		Card ret = card;
 		card = null;
 		
+		idCarta=53;
+		
 		repaint();
 		
 		return ret;
@@ -78,6 +80,7 @@ public class Cell extends JPanel implements CardSource, CardDestination {
 		}
 		
 		this.card = card;
+		this.idCarta=card.getId();
 		repaint();
 	}
 	
