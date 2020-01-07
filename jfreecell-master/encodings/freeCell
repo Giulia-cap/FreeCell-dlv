@@ -88,29 +88,33 @@ mossa(C,F):-moveFromeCeToFinish(C,F).
 :-spostabileInF(C,F),moveToCo(Car,Col).
 :-spostabileInF(C,F),moveFromeCeToColumn(Cell,Column).
 
+										%livello 1: scelta mossa in base al costo della mossa
+										
 %se posso togliere una carta dalle celle vuote, devo cercare di farlo
-:~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [2:1]
+:~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [1:1]
 
 % bisogna evitare il più possibile di occupare celle vuote
 :~moveToCe(C,X). [1:1]
 
-cartaCheLiberaUnAsso(C):-spostabileInCe(C),column(C,P,Column),column(C1,P1,Column),card(C1,S,1),P1=P-1.
-:~moveToCe(C,X), not cartaCheLiberaUnAsso(C). [1:1]
+										%livello 2: calcolo costo delle varie mosse
+
+%cartaCheLiberaUnAsso(C):-spostabileInCe(C),column(C,P,Column),column(C1,P1,Column),card(C1,S,1),P1=P-1.
+%:~moveToCe(C,X), not cartaCheLiberaUnAsso(C). [1:1]
 
 %dal momento in cui decido di spostare in colonna devo preferire gli spostamanti che liberano assi
-colonnaConAssi(C):-column(Card,P,C),card(Card,S,1).
-:~moveToCo(Card,Column), not colonnaConAssi(Column). [3:1]
+colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).      
+:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCo(Card,Col). [Position:1]
 
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
-:~moveToCe(C,X),column(C,P,Column),not colonnaConAssi(Column). [1:1]
+:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCe(Card,Cell). [Position:1]
 
 %dal momento in cui decido di spostare in colonna devo preferire spostamenti che liberano carte da mettere in finish
 prossimaCarta(C):-finishedCell(Card,S,V),card(C,S,V1),V1=V+1.
-colonnaConProssima(Col):-column(C,P,Col),prossimaCarta(C).
-:~moveToCo(Card,Column), not colonnaConProssima(Column). [2:1]
+colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
+:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCo(Card,Col). [Position:1]
 
 %dal momento in cui decido di spostare in cella devo preferire spostamenti che liberano carte da mettere in finish
-:~moveToCe(C,X),column(C,P,Column), not colonnaConProssima(Column). [2:1]
+:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel). [Position:1]
 
 
 
