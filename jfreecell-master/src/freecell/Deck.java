@@ -2,6 +2,8 @@ package freecell;
 
 import java.util.Random;
 
+import freecell.Card.Suit;
+
 public class Deck 
 {
 	private Card[] cards;
@@ -39,6 +41,13 @@ public class Deck
 		cards[cardsLeft] = tmp;
 		
 		return tmp;
+	}
+	
+	public Card restituisciCarta(int r, Suit s ) {
+		for(int i=0;i<cards.length;i++)
+			if(cards[i].getRank()==r && cards[i].getSuit()==s)
+				return cards[i];
+		return null;
 	}
 	
 	public void shuffle() {

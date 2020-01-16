@@ -37,7 +37,7 @@ public class MoveFromCeToColumn
 
 	public String toString() {
 		String s = "";
-		s += "moveToF(" + cefrom + "," + coTo + ")";
+		s += "moveFromeCeToColumn(" + cefrom + "," + coTo + ")";
 		return s;
 	}
 }

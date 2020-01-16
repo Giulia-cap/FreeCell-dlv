@@ -107,7 +107,6 @@ public class FinishedCell extends JPanel implements CardDestination {
 		{ 
 			if (suit == null || card.getSuit() == suit) 
 			{
-				System.out.println("entrooooooooooooooooooooooooooooooooooooo");
 				return true;
 			}
 		}

@@ -22,7 +22,7 @@ public class MoveFromCeToFinish
 	
 	public String toString() {
 		String s = "";
-		s += "moveToF(" + cardFrom1 + "," + finish1 + ")";
+		s += "moveFromeCeToFinish(" + cardFrom1 + "," + finish1 + ")";
 		return s;
 	}
 

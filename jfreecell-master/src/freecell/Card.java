@@ -61,6 +61,11 @@ public class Card /*extends MovableInCo*/
 		this.id=id;
 	}
 	
+	@Override
+	public String toString() {
+		return "Card [rank=" + rank + ", suit=" + suit + ", id=" + id + "]";
+	}
+
 	public int getRank() { return rank; }
 	public Suit getSuit() { return suit; }
 	public int getId() {return id;}

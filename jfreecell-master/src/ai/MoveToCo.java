@@ -37,7 +37,7 @@ public class MoveToCo
 	
 	public String toString() {
 		String s = "";
-		s += "moveToF(" + caId + "," + coId + ")";
+		s += "moveToCo(" + caId + "," + coId + ")";
 		return s;
 	}
 }

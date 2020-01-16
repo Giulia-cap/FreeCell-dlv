@@ -59,7 +59,14 @@ public class Column extends JPanel implements CardSource, CardDestination {
 
 	public Card remove() {
 		Card ret = cards.removeLast();
+		updateSize();
+		repaint();
 		
+		return ret;
+	}
+	
+	public Card removeI(int index) {
+		Card ret = cards.remove(index);
 		updateSize();
 		repaint();
 		
@@ -118,6 +125,7 @@ public class Column extends JPanel implements CardSource, CardDestination {
 		updateSize();
 		repaint();
 	}
+	
 	
 	public void reset() {
 		cards.clear();
