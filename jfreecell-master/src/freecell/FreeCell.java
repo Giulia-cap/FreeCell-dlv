@@ -157,7 +157,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
 		  try {
 	            // apre il file in lettura
-	            FileReader filein = new FileReader("resources/game1.txt");
+	            FileReader filein = new FileReader("resources/game2.txt");
 	            
 	            int next;
 	            do {
@@ -568,7 +568,7 @@ public class FreeCell extends JFrame implements MouseListener {
 			{
 				for(int j=0;j<8;j++)
 				{
-					if(!columns[i].getCards().isEmpty())
+					if(/*!columns[i].getCards().isEmpty() &&*/ !columns[j].getCards().isEmpty())
 					{
 						if(columns[j].getCards().getLast().getId()==moveToF.getCardId())
 						{
@@ -584,7 +584,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		selectedSource = null;
 		checkForVictory();
 		
-		//Thread.sleep(5000);
+		blocca();
 		
 		findMovableCards();
 		findSolution();
@@ -615,7 +615,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		}
 		
 		
-		//Thread.sleep(5000);
+		blocca();
 		
 		findMovableCards();
 		findSolution();
@@ -683,7 +683,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		
 		selectedSource = null;
 		
-		//Thread.sleep(5000);
+		blocca();
 		
 		findMovableCards();
 		findSolution();
@@ -711,7 +711,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		
 		checkForVictory();
 		
-		//Thread.sleep(5000);
+		blocca();
 		
 		findMovableCards();
 		findSolution();
@@ -737,7 +737,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		
 		checkForVictory();
 		
-		//Thread.sleep(5000);
+		blocca();
 		
 		findMovableCards();
 		findSolution();
@@ -800,7 +800,10 @@ public class FreeCell extends JFrame implements MouseListener {
 
 
 
-
+public void blocca() throws InterruptedException
+{
+	return;//Thread.sleep(5000);
+}
 
 
 
