@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
@@ -54,16 +55,20 @@ public class FreeCell extends JFrame implements MouseListener {
 	private FinishedCell[] finishedCells;
 	private Column[] columns;
 	private static Handler handler;
-	
+
 	private Card appenaSpostata;
 	private int nContemporanee=0;
-	
-	
+
+
 	boolean first=true;
+	boolean assi=true,centro,fine;
 
 	ASPMapper m;
 
 	private CardSource selectedSource;
+	private static String encodingResourceAssi="encodings/liberaAssi";
+	private static String encodingResourceCentro="encodings/centroDelGioco";
+	private static String encodingResourceFine="encodings/giocoQuasiFinito";
 	private static String encodingResource="encodings/freeCell";
 	private static String instanceResource="encodings/instance";
 	public InputProgram facts;
@@ -117,12 +122,12 @@ public class FreeCell extends JFrame implements MouseListener {
 		getContentPane().setBackground(BACKGROUND_COLOR);
 
 		// Start the game. Doing this here so the window will be sized correctly.
-		
+
 		start();
 
 		pack(); //grafica
 		setVisible(true);
-		
+
 		findMovableCards();
 		findSolution();
 	}
@@ -143,67 +148,68 @@ public class FreeCell extends JFrame implements MouseListener {
 
 		// Deal
 		deck.shuffle(); //rimescolare
-		
-		
+
+
 		//generaRandom();
 		generaDaFile();
-		 
+
 	}
-	
+
 	private void generaDaFile() 
 	{
 		char[] carte=new char[168];
 		int j=0;
 		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
-		  try {
-	            // apre il file in lettura
-	            FileReader filein = new FileReader("resources/game2.txt");
-	            
-	            int next;
-	            do {
-	                next = filein.read(); // legge il prossimo carattere
-	                
-	                if (next != -1) { // se non e' finito il file
-	                    char nextc = (char) next;
-	                   // System.out.print(j +"-"+ nextc+ " ");
-	                    carte[j]=nextc; j++;
-	                }
+		try {
+			// apre il file in lettura
+			FileReader filein = new FileReader("resources/game4.txt");
 
-	            } while (next != -1);
-	            
-	            filein.close(); // chiude il file
-	            
-	        } catch (IOException e) {
-	            System.out.println(e);
-	        }
-		 ///////////////////////////////////////////////////////////////////////////////////////////////
-		  
-		  int colonna=0;
-		  int val;
-		  Suit seme;
-		  
-		  for(int i=0;i<carte.length;)
-		  {
-			  if(converti(carte[i])!=0)
-			  {
-				  val=converti(carte[i]); i++;
-				  seme=controllaSeme(carte[i]);i++;
-				  Card c=deck.restituisciCarta(val, seme);
-				  columns[colonna].initAdd(c); //metto la carta nella colonna  
-				  int p=columns[colonna].getCards().size();
+			int next;
+			do {
+				next = filein.read(); // legge il prossimo carattere
+
+				if (next != -1) { // se non e' finito il file
+					char nextc = (char) next;
+					// System.out.print(j +"-"+ nextc+ " ");
+					carte[j]=nextc; j++;
+				}
+
+			} while (next != -1);
+
+			filein.close(); // chiude il file
+
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+
+		int colonna=0;
+		int val;
+		Suit seme;
+
+		for(int i=0;i<carte.length;)
+		{
+			if(converti(carte[i])!=0)
+			{
+				val=converti(carte[i]); i++;
+				seme=controllaSeme(carte[i]);i++;
+				Card c=deck.restituisciCarta(val, seme);
+				columns[colonna].initAdd(c); //metto la carta nella colonna  
+				int p=columns[colonna].getCards().size();
 				try {
 					facts.addObjectInput(new Column(c.getId(),p,colonna));
 				}
 				catch (Exception e) {
 					e.printStackTrace();}
 				if(colonna==7)
-					  colonna=0;
-				  else
-					  colonna++;
-			  }
-			  else i++;
-		  }
-		
+					colonna=0;
+				else
+					colonna++;
+			}
+			else i++;
+		}
+
+
 	}
 
 	private void generaRandom() {
@@ -220,21 +226,21 @@ public class FreeCell extends JFrame implements MouseListener {
 			catch (Exception e) {
 				e.printStackTrace();}
 		}
-		
+
 	}
 
 	private Suit controllaSeme(char seme) {
 		switch(seme)
 		{
-			case 'C': return Suit.CLUBS; 
-			case 'D': return Suit.DIAMONDS;
-			case 'H': return Suit.HEARTS;
-			case 'S': return Suit.SPADES;
+		case 'C': return Suit.CLUBS; 
+		case 'D': return Suit.DIAMONDS;
+		case 'H': return Suit.HEARTS;
+		case 'S': return Suit.SPADES;
 		}
 		return null;
-		
+
 	}
-	
+
 	private int converti(char v)
 	{
 		switch (v) {
@@ -267,7 +273,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		}
 		return 0;
 	}
-	
+
 	int prova=0;
 
 	private void findNewFacts()
@@ -281,7 +287,7 @@ public class FreeCell extends JFrame implements MouseListener {
 				e.printStackTrace();
 			}
 		}
-		
+
 		for(int i=0;i<4;i++)
 		{
 			String s="ciao";
@@ -293,7 +299,7 @@ public class FreeCell extends JFrame implements MouseListener {
 				s="HEARTS";
 			else if(finishedCells[i].getSuit()==Suit.SPADES)
 				s="SPADES";
-			
+
 			try {
 				facts.addObjectInput(new FinishedCell(finishedCells[i].getTop(),s,i) );  
 			} 
@@ -301,7 +307,7 @@ public class FreeCell extends JFrame implements MouseListener {
 				e.printStackTrace();
 			}
 		}
-		
+
 		for(int i=0;i<8;i++)
 		{
 			for(int j=0;j<columns[i].getCards().size();j++)
@@ -314,9 +320,43 @@ public class FreeCell extends JFrame implements MouseListener {
 					e.printStackTrace();}
 			}
 		}
+
+		cercaStrategia();
 	}
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	private void cercaStrategia()
+	{
+		assi=false;
+		centro=false;
+		fine=false;
+		int ncarte=0;
+		for(int i=0;i<8;i++)
+		{
+			if(assi) break;
+			for(int j=0;j<columns[i].getCards().size();j++)
+				if((!columns[i].getCards().isEmpty()) && columns[i].getCards().get(j).getRank()==1 ) //vedo se devo liberare ancora assi
+				{
+					assi=true; break;
+				}
+				else if(!columns[i].getCards().isEmpty())
+				{
+					ncarte++;
+				}	
+		}
+
+		for(int i=0;i<4;i++)
+			if(cells[i].getIdCarta()!=53)
+				ncarte++;
+
+		if(!assi && ncarte<=20)
+			fine=true;
+		else
+			centro=true;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void findMovableCards() 
 	{
 		//	movCe=null; int pos=0; movF=null; int pos2=0;
@@ -329,7 +369,7 @@ public class FreeCell extends JFrame implements MouseListener {
 			cellaVuota=false;
 		}
 		else cellaVuota=true;
-		
+
 		for(int j=0;j<4;j++) 
 		{
 			Card ca=cells[j].getCard();
@@ -352,7 +392,7 @@ public class FreeCell extends JFrame implements MouseListener {
 						catch (Exception e) {
 							e.printStackTrace();}
 					}
-					
+
 					for(int h=0;h<4;h++)
 					{
 						if(finishedCells[h].canAdd(ca))
@@ -371,10 +411,10 @@ public class FreeCell extends JFrame implements MouseListener {
 			if(!columns[i].getCards().isEmpty())
 			{
 				Card c=columns[i].getCards().getLast();
-				if(c!=appenaSpostata)
-				{
+				//if(c!=appenaSpostata)
+				//{
 					//se c'è almeno una cella vuota le ultime carte possono essere spostate li
-					if(cellaVuota)
+					if(cellaVuota && (c!=appenaSpostata))
 					{
 						try {
 							facts.addObjectInput(new MovableInCe(c.getId()));
@@ -386,7 +426,7 @@ public class FreeCell extends JFrame implements MouseListener {
 					//controllo se la carta può essere inserita nelle finished cell
 					for(int j=0;j<4;j++)
 					{
-						if(finishedCells[j].canAdd(c))
+						if(finishedCells[j].canAdd(c) && (c!=appenaSpostata) )
 						{
 							try {
 								facts.addObjectInput(new MovableInF(c.getId(),finishedCells[j].getId()));
@@ -395,77 +435,150 @@ public class FreeCell extends JFrame implements MouseListener {
 							catch (Exception e) {
 								e.printStackTrace();}
 						}
-		
+
 					}
-				/*	//controllo se l'ultima carta può essere spostata in colonna 
+					
+					
+				////////////////////////////// Ultima carta di ogni colonna//////////////	
+					Card ultima=columns[i].getCards().getLast();
+					
 					for(int co=0;co<8;co++)
 					{
-						if(columns[co].canAdd(c))
+						if(columns[co].canAdd(ultima) && co!=i && (c!=appenaSpostata) )
 							try {
-								facts.addObjectInput(new MovableInCo(c.getId(),co));
+								facts.addObjectInput(new MovableInCo(ultima.getId(),co));
 							}
 						catch (Exception e) {
 							e.printStackTrace();}
-					}*/
+					}
+////////////////////////////////////////////////////////////////////////////////////////////////////////			
 					
 					int spostate=0;
+					LinkedList<Card> tmp= new LinkedList<Card>();
+					boolean almenoUna=false;
+					for(int ca=columns[i].getCards().size()-1;ca>=0;ca--)
+					{
+						if(spostate<=nContemporanee)
+						{
+							if(ca!=0)
+							{
+								Card card=columns[i].getCards().get(ca);
+								Card bottom = columns[i].getCards().get(ca-1); 
+								if (bottom.getColor() != card.getColor() &&
+										card.getRank() == bottom.getRank() - 1)
+								{
+									tmp.add(card);
+									almenoUna=true;
+								}
+								else if(almenoUna)
+								{
+									tmp.add(card);
+									break;
+								}
+								else break;
+							}
+						}
+					}
+					
+					
+					if(!(tmp.isEmpty())) {
+					Card papabile=tmp.getLast();
+					
+					for(int co=0;co<8;co++)
+					{
+						if(columns[co].canAdd(papabile) && co!=i &&(c!=appenaSpostata) )
+							try {
+								facts.addObjectInput(new MovableInCo(papabile.getId(),co));
+							}
+						catch (Exception e) {
+							e.printStackTrace();}
+					}}
+					
+
+				/*	int spostate=0;
 					for(int ca=columns[i].getCards().size()-1;ca>=0;ca--)
 					{
 						Card controllo=columns[i].getCards().get(ca); //se è l'ultima la controllo sicuro
 						boolean trovata=false;
+						boolean fine1=false;
 						if(spostate<=nContemporanee)
 						{
 							if(!(ca==columns[i].getCards().size()-1) && ca!=0) 
 							{
-								Card card=columns[i].getCards().get(ca);
-								Card bottom = columns[i].getCards().get(ca-1); 
-								
+								Card card=columns[i].getCards().get(ca-1);
+								Card bottom = columns[i].getCards().get(ca); 
+
 								if (bottom.getColor() != card.getColor() &&
-										bottom.getRank() == card.getRank() + 1) {
+										bottom.getRank() == card.getRank() - 1) {
 									controllo=bottom; 
 									trovata=true;
 									try {
 										facts.addObjectInput(new FaParteDiUnaScala(controllo.getId()));
 									}
-								catch (Exception e) {
-									e.printStackTrace();}
+									catch (Exception e) {
+										e.printStackTrace();}
 								}
-								else break; 
+								else if(trovata)
+								{
+									 fine1=true;
+								}
+								else  
+								{
+									break;
+								}
 							}
 						}
-							
-							for(int co=0;co<8;co++)
-							{
-								if(columns[co].canAdd(controllo))
-									try {
-										facts.addObjectInput(new MovableInCo(controllo.getId(),co));
-										if(trovata)
-										{
-											spostate++;
-											System.out.println("ne ho trovata una! "+controllo.getId()+co);
-										}
+						
+
+						for(int co=0;co<8;co++)
+						{
+							if(columns[co].canAdd(controllo) && (c!=appenaSpostata) )
+								try {
+									facts.addObjectInput(new MovableInCo(controllo.getId(),co));
+									if(trovata)
+									{
+										spostate++;
+										System.out.println("ne ho trovata una! "+controllo.getId()+co);
 									}
-								catch (Exception e) {
-									e.printStackTrace();}
-							}
-					}
-			
-				}
+								}
+							catch (Exception e) {
+								e.printStackTrace();}
+						}
+						
+						if(fine1==true) break;
+					
+
+				}*/
 			}
-			
+
 		}
-		
+
 	}
-	
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void findSolution()
 	{
+
 		handler.addProgram(facts);
-		InputProgram encoding= new ASPInputProgram(); 
-		//encoding.addProgram(getEncodings(encodingResource));
-		encoding.addFilesPath(encodingResource);
-		//encoding.addFilesPath(instanceResource);
+		InputProgram encoding= new ASPInputProgram();
+		
+		if(assi) {   
+			encoding.addFilesPath(encodingResourceAssi);
+		}
+		else if(centro) { 
+			handler = new DesktopHandler(new DLVDesktopService("lib/dlv.mingw.exe"));
+			handler.addProgram(facts);
+			encoding.addFilesPath(encodingResourceCentro);
+		}
+		else {
+			handler = new DesktopHandler(new DLVDesktopService("lib/dlv.mingw.exe"));
+			handler.addProgram(facts);
+			encoding.addFilesPath(encodingResourceFine);
+		}
+
+
 		handler.addProgram(encoding);
+
 		first=false;
 
 		try {
@@ -474,14 +587,14 @@ public class FreeCell extends JFrame implements MouseListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			ASPMapper.getInstance().registerClass(MoveToF.class); 
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			ASPMapper.getInstance().registerClass(MoveToCo.class); 
 
@@ -495,7 +608,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			ASPMapper.getInstance().registerClass(MoveFromCeToFinish.class); 
 
@@ -503,14 +616,9 @@ public class FreeCell extends JFrame implements MouseListener {
 			e.printStackTrace();
 		}
 
-
 		Output o =  handler.startSync();
-		AnswerSets answers = (AnswerSets) o; 
-
-
+		AnswerSets answers= (AnswerSets) o;
 		System.out.println(facts.getPrograms());
-		//
-		//System.out.println(answers.getAnswersets());
 
 		for(AnswerSet a:answers.getAnswersets())
 		{ // per ogni as. il get restituisce un set di as in ordine di ottimalità
@@ -554,7 +662,7 @@ public class FreeCell extends JFrame implements MouseListener {
 			} 
 			break;
 		}
-		
+
 
 	}
 
@@ -583,9 +691,9 @@ public class FreeCell extends JFrame implements MouseListener {
 		}
 		selectedSource = null;
 		checkForVictory();
-		
+
 		blocca();
-		
+
 		findMovableCards();
 		findSolution();
 
@@ -613,16 +721,16 @@ public class FreeCell extends JFrame implements MouseListener {
 				break;
 			}
 		}
-		
-		
+
+
 		blocca();
-		
+
 		findMovableCards();
 		findSolution();
 
 
 	}
-	
+
 	private void removeCard(MoveToCo moveToCo) throws InterruptedException 
 	{
 		/*for(int i=0;i<8;i++)
@@ -643,15 +751,15 @@ public class FreeCell extends JFrame implements MouseListener {
 				}
 			}
 		}*/
-		
+
 		int column=0;
-		
+
 		for(int i=0;i<8;i++)
 		{
 			if(columns[i].getColumn()==moveToCo.getCoId()) {
 				column=i; break;}  //individuo la colonna su cui spostare la carta
 		}
-		
+
 		for(int i=0;i<8;i++)
 		{
 			if(i!=column)
@@ -660,14 +768,19 @@ public class FreeCell extends JFrame implements MouseListener {
 				{
 					if(columns[i].getCards().get(j).getId()==moveToCo.getCaId()) //individuo la carta che devo spostare
 					{
+						appenaSpostata=columns[i].getCards().get(j);
 						if(j!=columns[i].getCards().size()-1) //se non è l'ultima 
 						{
-							for(int k=j;k<columns[i].getCards().size();k++) //sposto tutte le  carte a partire da quella
+							for(int k=j;k<columns[i].getCards().size();) //sposto tutte le  carte a partire da quella
 							{
-								columns[column].add(columns[i].removeI(j));
+								System.out.println(columns[i].getCards().size());
+							 if(columns[column].canAdd((columns[i].getCards().get(j))))
+									columns[column].add(columns[i].removeI(j));
+								else break;
+								
 							}
-							appenaSpostata=columns[i].getCards().get(j);
-							break;
+							
+							//break;
 						}
 						else //se è l'ultima devo spostare solo quella
 						{
@@ -679,18 +792,18 @@ public class FreeCell extends JFrame implements MouseListener {
 				}
 			}
 		}
-		
-		
+
+
 		selectedSource = null;
-		
+
 		blocca();
-		
+
 		findMovableCards();
 		findSolution();
 
 
 	}
-	
+
 	private void removeCard(MoveFromCeToColumn move) throws InterruptedException
 	{
 		for(int i=0;i<4;i++)
@@ -708,15 +821,15 @@ public class FreeCell extends JFrame implements MouseListener {
 				}
 			}
 		}
-		
+
 		checkForVictory();
-		
+
 		blocca();
-		
+
 		findMovableCards();
 		findSolution();
 	}
-	
+
 	private void removeCard(MoveFromCeToFinish move) throws InterruptedException
 	{
 		for(int i=0;i<4;i++)
@@ -734,11 +847,11 @@ public class FreeCell extends JFrame implements MouseListener {
 				}
 			}
 		}
-		
+
 		checkForVictory();
-		
+
 		blocca();
-		
+
 		findMovableCards();
 		findSolution();
 	}
@@ -793,23 +906,24 @@ public class FreeCell extends JFrame implements MouseListener {
 		int ret = JOptionPane.showOptionDialog(this, "Congratulations! You've won! Would you like to play again?", "Victory!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (ret == JOptionPane.YES_OPTION) {
 			this.start();
-			
+
 		}
 		// If no, let them look at the board before they exit
 	}
 
 
 
-public void blocca() throws InterruptedException
-{
-	return;//Thread.sleep(5000);
-}
+	public void blocca() throws InterruptedException
+	{
+		//Thread.sleep(5000);
+		return;
+	}
 
 
 
 
 
-	
+
 
 	// mouseReleased behaves better than mouseClicked
 	public void mouseReleased(MouseEvent me) {
@@ -850,11 +964,11 @@ public void blocca() throws InterruptedException
 			}
 		}*/
 	}
-	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	// Used to detect double-clicks.
@@ -984,7 +1098,7 @@ public void blocca() throws InterruptedException
 		new FreeCell();
 	}
 
-	
+
 
 
 
