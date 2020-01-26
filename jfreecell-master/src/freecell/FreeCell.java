@@ -163,7 +163,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
 		try {
 			// apre il file in lettura
-			FileReader filein = new FileReader("resources/game1.txt");
+			FileReader filein = new FileReader("resources/game2.txt");
 
 			int next;
 			do {
@@ -504,11 +504,13 @@ public class FreeCell extends JFrame implements MouseListener {
 										card.getRank() == bottom.getRank() - 1)
 								{
 									tmp.add(card);
+									spostate++;
 									almenoUna=true;
 								}
 								else if(almenoUna)
 								{
 									tmp.add(card);
+									spostate++;
 									break;
 								}
 								else break;
