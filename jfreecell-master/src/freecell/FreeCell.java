@@ -20,7 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import ai.FaParteDiUnaScala;
+import ai.ProssimaInScala;
 import ai.MovableFromeCeInCo;
 import ai.MovableFromeCeInFinish;
 import ai.MovableInCe;
@@ -162,7 +162,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
 		try {
 			// apre il file in lettura
-			FileReader filein = new FileReader("resources/game4.txt");
+			FileReader filein = new FileReader("resources/game5.txt");
 
 			int next;
 			do {
@@ -278,6 +278,7 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private void findNewFacts()
 	{
+		generaCoperta();
 		for (int i = 0; i < 4; i++) 
 		{
 			try {
@@ -325,6 +326,36 @@ public class FreeCell extends JFrame implements MouseListener {
 	}
 
 
+
+	private void generaCoperta() {
+		Card carta;
+		
+		for(int i=0;i<8;i++)
+		{
+			if(!(columns[i].getCards().size()>1)) break;
+			carta=columns[i].getCards().get(columns[i].getCards().size()-2);
+			
+			for(int j=0;j<8;j++)
+			{
+				if(i!=j)
+				{
+					if(!columns[j].getCards().isEmpty()) {
+						Card bottom = columns[j].getCards().getLast(); 
+						if (bottom.getColor() != carta.getColor() &&
+								carta.getRank() == bottom.getRank() + 1)
+						{
+							try {
+								facts.addObjectInput(new ProssimaInScala(carta.getId()));
+							}
+							catch (Exception e) {
+								e.printStackTrace();}
+						}
+					}
+				}
+			}
+		}
+		
+	}
 
 	private void cercaStrategia()
 	{
@@ -444,7 +475,7 @@ public class FreeCell extends JFrame implements MouseListener {
 					
 					for(int co=0;co<8;co++)
 					{
-						if(columns[co].canAdd(ultima) && co!=i && (c!=appenaSpostata) )
+						if(columns[co].canAdd(ultima) && co!=i && (ultima!=appenaSpostata)  && (c!=appenaSpostata) )
 							try {
 								facts.addObjectInput(new MovableInCo(ultima.getId(),co));
 							}
@@ -486,7 +517,7 @@ public class FreeCell extends JFrame implements MouseListener {
 					
 					for(int co=0;co<8;co++)
 					{
-						if(columns[co].canAdd(papabile) && co!=i &&(c!=appenaSpostata) )
+						if(columns[co].canAdd(papabile) && co!=i &&(papabile!=appenaSpostata) && (c!=appenaSpostata) )
 							try {
 								facts.addObjectInput(new MovableInCo(papabile.getId(),co));
 							}
@@ -769,6 +800,7 @@ public class FreeCell extends JFrame implements MouseListener {
 					if(columns[i].getCards().get(j).getId()==moveToCo.getCaId()) //individuo la carta che devo spostare
 					{
 						appenaSpostata=columns[i].getCards().get(j);
+						System.out.println("appena spostata: "+appenaSpostata);
 						if(j!=columns[i].getCards().size()-1) //se non è l'ultima 
 						{
 							for(int k=j;k<columns[i].getCards().size();) //sposto tutte le  carte a partire da quella
@@ -785,6 +817,7 @@ public class FreeCell extends JFrame implements MouseListener {
 						else //se è l'ultima devo spostare solo quella
 						{
 							appenaSpostata=columns[i].getCards().get(j);
+							System.out.println("appena spostata: "+appenaSpostata);
 							columns[column].add(columns[i].remove());
 							break;	
 						}

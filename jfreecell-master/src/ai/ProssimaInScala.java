@@ -3,14 +3,14 @@ package ai;
 import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
 
-@Id("faParteDiUnaScala")
-public class FaParteDiUnaScala 
+@Id("prossimaInScala")
+public class ProssimaInScala 
 {
 	@Param(0)
 	private int cCheFaPa;
 	
-	public FaParteDiUnaScala(){}
-	public FaParteDiUnaScala(int f)
+	public ProssimaInScala(){}
+	public ProssimaInScala(int f)
 	{
 		cCheFaPa=f;
 	}

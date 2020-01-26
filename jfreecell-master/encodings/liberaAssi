@@ -89,6 +89,8 @@ mossa(C,F):-moveFromeCeToFinish(C,F).
 :-spostabileInF(C,F),moveToCo(Car,Col).
 :-spostabileInF(C,F),moveFromeCeToColumn(Cell,Column).
 :-spostabileDaCellaAFinish(F,C),moveFromeCeToColumn(Col,C1).
+:-spostabileDaCellaAFinish(F,C),moveToCe(C1,X).
+:-spostabileDaCellaAFinish(F,C),moveToCo(C1,X).
 
 										%livello 3
 %cellenonVuote(N):-#count{F:finishedCell(C,V,F),C!=53}=N.
@@ -127,10 +129,10 @@ colore(C,"NERO"):-card(C,"CLUBS",V).
 
 %dal momento in cui decido di spostare in colonna devo preferire gli spostamanti che liberano assi
 colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).      
-:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCo(Card,Col). [Position:2]
+:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCo(Card,Col),Pago=Position+1. [Pago:2]
 
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
-:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCe(Card,Cell). [Position:2]
+:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCe(Card,Cell),Pago=Position+1. [Pago:2]
 
 
 										%livello 1
@@ -138,15 +140,17 @@ colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).
 %dal momento in cui decido di spostare in colonna devo preferire spostamenti che liberano carte da mettere in finish
 prossimaCarta(C):-finishedCell(Card,S,F),card(Card,S,V),card(C,S,V1),V1=V+1.
 colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
-:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCo(Card,Col). [Position:1]
+:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCo(Card,Col),Pago=Position+1. [Pago:1]
 
 %dal momento in cui decido di spostare in cella devo preferire spostamenti che liberano carte da mettere in finish
-:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel). [Position:1]
+:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel),Pago=Position+1. [Pago:1]
 
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
-%:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCe(Card,Cell). [Position:1]
+:~spostabileInCe(Card),column(Card,P,Column),colonnaConAssi(Column,Position), noToCe(Card,Cell),Pago=Position+1. [Pago:1]
 
-										
+%vediamo(Card,Column):-prossimaInScala(Card),column(Card,P,Column).
+%vediamoo(Card,Column):-spostabileInCe(Card),column(Card,P,Column).
+%:~vediamo(C,Col),vediamoo(C1,Col),noToCe(C1,B). [1:1]
 
 
 
