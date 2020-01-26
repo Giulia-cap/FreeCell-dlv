@@ -94,11 +94,6 @@ mossa(C,F):-moveFromeCeToFinish(C,F).
 :-spostabileDaCellaAFinish(F,C),moveToCe(C1,X).
 :-spostabileDaCellaAFinish(F,C),moveToCo(C1,X).
 
-
-
-%:-noToCe(C,F),spostabileDaCellaAFinish(C,F)
-%spostabileInF(C,F).
-
 										%livello 2
 
 
@@ -108,14 +103,6 @@ colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Co
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCo(Card,Col). [2:2]
 
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [2:2]
-
-%preferirei togliere carte da colonne con importanza maggiore
-importanzaColonna(I,Column):-column(C,P,Column),#count{Card:column(Card,P1,Co),prossimaCarta(Card)}=I.
-%:~spostabile(C), column(C,P,Col), importanzaColonna(I,Column), not mossa(C,Col). 
-
-%preferirei non inserire una carta in una cella importante
-:~column(C,P,Col), mossa(C,Col),importanzaColonna(I,Column). [I:2]
-
 
 
 

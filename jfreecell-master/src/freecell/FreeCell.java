@@ -31,6 +31,7 @@ import ai.MoveFromCeToFinish;
 import ai.MoveToCe;
 import ai.MoveToCo;
 import ai.MoveToF;
+import ai.NumeroCarte;
 import freecell.Card.Suit;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
@@ -162,7 +163,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
 		try {
 			// apre il file in lettura
-			FileReader filein = new FileReader("resources/game5.txt");
+			FileReader filein = new FileReader("resources/game1.txt");
 
 			int next;
 			do {
@@ -365,17 +366,21 @@ public class FreeCell extends JFrame implements MouseListener {
 		int ncarte=0;
 		for(int i=0;i<8;i++)
 		{
+			ncarte+=columns[i].getCards().size();
 			if(assi) break;
 			for(int j=0;j<columns[i].getCards().size();j++)
 				if((!columns[i].getCards().isEmpty()) && columns[i].getCards().get(j).getRank()==1 ) //vedo se devo liberare ancora assi
 				{
 					assi=true; break;
-				}
-				else if(!columns[i].getCards().isEmpty())
-				{
-					ncarte++;
 				}	
 		}
+		
+		
+		try {
+			facts.addObjectInput(new NumeroCarte(ncarte));
+		}
+	catch (Exception e) {
+		e.printStackTrace();}
 
 		for(int i=0;i<4;i++)
 			if(cells[i].getIdCarta()!=53)
@@ -740,7 +745,7 @@ public class FreeCell extends JFrame implements MouseListener {
 				{
 					if(!columns[i].getCards().isEmpty())
 					{
-						if(columns[j].getCards().getLast().getId()==moveToC.getCa())
+						if((!columns[j].getCards().isEmpty())&&columns[j].getCards().getLast().getId()==moveToC.getCa())
 						{
 							appenaSpostata=columns[j].getCards().getLast();
 							cells[i].add(columns[j].remove());

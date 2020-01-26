@@ -88,69 +88,104 @@ mossa(C,F):-moveFromeCeToFinish(C,F).
 :-spostabileInF(C,F),moveToCe(C1,X).
 :-spostabileInF(C,F),moveToCo(Car,Col).
 :-spostabileInF(C,F),moveFromeCeToColumn(Cell,Column).
+:-spostabileDaCellaAFinish(F,C),moveFromeCeToColumn(Col,C1).
 :-spostabileDaCellaAFinish(F,C),moveToCe(C1,X).
 :-spostabileDaCellaAFinish(F,C),moveToCo(C1,X).
 
-										%livello 3
 
-% bisogna evitare il più possibile di occupare celle vuote
-:~moveToCe(C,X). [1:2]
+
+
+
+:~moveToCe(C,X),numeroCarte(N),N<30. [1:2]
+:~moveToCe(C,X),numeroCarte(N),N>29. [1:4]
+
+
+
+%se posso togliere una carta dalle celle vuote, devo cercare di farlo
+:~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column),numeroCarte(N),N>29. [1:1]
+:~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column),numeroCarte(N),N>29. [1:2]
 
 %libero le carte che si possono mettere nelle finish con una sola mossa
 prossimaCarta(Card):-finishedCell(C,S,F),card(Card,S,V1),card(C,S,V),V=V1+1.
 colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Col),column(C,P1,Col),prossimaCarta(C),P1=P-1.
-:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCo(Card,Col). [2:3]
+:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCo(Card,Col). [2:5]
 
-:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [2:3]
-
-
+:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [2:5]
 
 
 colonnaNonVuota(C):-column(Card,Pos,C).
-:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V). [V:3]
+:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V),numeroCarte(N),N>29. [V:3]
+:~not colonnaNonVuota(C),no(Cell,C),card(Car,S,V),cell(Car,Cell). [V:3]
 
-
-
-										%livello 2: calcolo costo delle varie mosse
-
-%dal momento in cui decido di spostare in colonna devo preferire gli spostamanti che liberano assi
-colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).      
-:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCo(Card,Col). [Position:2]
-
-% dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
-:~column(Card,P,Column),colonnaConAssi(Column,Position), noToCe(Card,Cell). [Position:2]
-
-
-										%livello 1
 
 %dal momento in cui decido di spostare in colonna devo preferire spostamenti che liberano carte da mettere in finish
 prossimaCarta(C):-finishedCell(Card,S,F),card(Card,S,V),card(C,S,V1),V1=V+1.
 colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
-:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCo(Card,Col). [Position:1]
+:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCo(Card,Col). [Position:2]
 
 %dal momento in cui decido di spostare in cella devo preferire spostamenti che liberano carte da mettere in finish
-:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel). [Position:1]
-
-
-:~scala(C),moveToCo(C,Column). [1:3]
-:~scala(C),moveToCe(C,Column). [1:3]
-
+:~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel). [Position:2]
 
 
 %se ho una scala devo cercare di non separarla
 scala(C):-card(C,S,V),card(C1,S1,V1),colore(C,Colore),colore(C1,Colore1),Colore!=Colore1,column(C,P,Col),column(C1,P1,Col),P=P1+1,V=V1-1.
+scala(C):-card(C,S,V),card(C1,S1,V1),colore(C,Colore),colore(C1,Colore1),Colore!=Colore1,column(C,P,Col),column(C1,P1,Col),P=P1-1,V=V1+1.
 colore(C,"ROSSO"):-card(C,"DIAMONDS",V).
 colore(C,"ROSSO"):-card(C,"HEARTS",V).
 colore(C,"NERO"):-card(C,"SPADES",V).
 colore(C,"NERO"):-card(C,"CLUBS",V).
 
-									
-scala(C):-card(C,S,V),card(C1,S1,V1),colore(C,Colore),colore(C1,Colore1),Colore!=Colore1,column(C,P,Col),column(C1,P1,Col),P=P1-1,V=V1+1.
-%:~moveToCe(C,X),faParteDiUnaScala(C). [1:2]
-%se ho una scala devo cercare di non separarla
-%:~moveToCe(C,X),faParteDiUnaScala(C). [1:1]
-%:~moveToCo(C,X),faParteDiUnaScala(C). [1:3]
+:~scala(C),moveToCo(C,Column),N>29,numeroCarte(N). [1:4]
+:~scala(C),moveToCo(C,Column),N<30,numeroCarte(N). [1:1]
+:~scala(C),moveToCe(C,Column). [1:4]
 
-%se posso togliere una carta dalle celle vuote, devo cercare di farlo
-:~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [1:1]
-:~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [1:2]
+
+
+
+:~noToCo(C,Co),card(C,S,V),N<35,numeroCarte(N).[V:1]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+										%livello 3
+
+
+
+
+
+
+
+
+										%livello 2: calcolo costo delle varie mosse
+
+
+
+										%livello 1
+
+
+
+
+
+
