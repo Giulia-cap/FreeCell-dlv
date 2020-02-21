@@ -70,6 +70,10 @@ moveToCo(Car,Col)|noToCo(Car,Col):-spostabileInCo(Car,Col).
 moveFromeCeToColumn(Cell,Column)|no(Cell,Column):-spostabileDaCellaAColonna(Cell,Column).
 moveFromeCeToFinish(Card,Finish)|noMo(Card,Finish):-spostabileDaCellaAFinish(Card,Finish).
 
+%non è possibile spostare una carta in una colonna vuota se questa è l'unica carta della colonna in cui si trova
+:-not colonnaNonVuota(C),moveToCo(Card,C), #count{Ca:column(Card,P,Column),column(Ca,P1,Column)}=1.
+
+
 spostabile(C):-spostabileInCe(C).
 spostabile(C):-spostabileInF(C,F).
 
@@ -115,6 +119,8 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 
 %dal momento in cui decido di spostare in cella devo preferire spostamenti che liberano carte da mettere in finish
 :~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel). [Position:1]
+
+
 
 
 
