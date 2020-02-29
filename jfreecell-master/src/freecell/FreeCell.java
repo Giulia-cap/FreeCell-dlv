@@ -38,6 +38,7 @@ import ai.MoveToCo;
 import ai.MoveToF;
 import ai.NumeroCarte;
 import freecell.Card.Suit;
+import freecell.images.Esegui;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
@@ -65,6 +66,8 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private Card appenaSpostata;
 	private int nContemporanee=0;
+	
+	private String res="resources/medium2.txt";;
 
 	Button bstop;
 	Button brallenta;
@@ -148,6 +151,8 @@ public class FreeCell extends JFrame implements MouseListener {
 
 		findSolution();
 	}
+	
+	boolean booleana=false;
 
 	private void start() 
 	{
@@ -176,10 +181,11 @@ public class FreeCell extends JFrame implements MouseListener {
 	{
 		char[] carte=new char[168];
 		int j=0;
+	
 		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
 		try {
 			// apre il file in lettura
-			FileReader filein = new FileReader("resources/easy.txt");
+			FileReader filein = new FileReader(res);
 
 			int next;
 			do {
@@ -225,7 +231,6 @@ public class FreeCell extends JFrame implements MouseListener {
 			}
 			else i++;
 		}
-
 
 	}
 
@@ -325,6 +330,13 @@ public class FreeCell extends JFrame implements MouseListener {
 				e.printStackTrace();
 			}
 		}
+		
+		if(res=="resources/hard1.txt"  || res=="resources/medium2.txt") { 
+			try {
+			facts.addObjectInput(new Esegui(2));
+		}
+		catch (Exception e) {
+			e.printStackTrace();}}
 
 		for(int i=0;i<8;i++)
 		{
@@ -376,6 +388,8 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private void cercaStrategia()
 	{
+		
+		System.out.println("cerca strategia");
 		assi=false;
 		centro=false;
 		fine=false;
@@ -384,12 +398,12 @@ public class FreeCell extends JFrame implements MouseListener {
 		for(int i=0;i<8;i++)
 		{
 			ncarte+=columns[i].getCards().size();
-			if(columns[i].getCards().isEmpty()) {colonneVuote=true;break;}
+			if(columns[i].getCards().isEmpty()) {colonneVuote=true; System.out.println("la presunta colonna vuota è:"+i);}
 			//if(assi) break;
 			for(int j=0;j<columns[i].getCards().size();j++) {
 				if((!columns[i].getCards().isEmpty()) && columns[i].getCards().get(j).getRank()==1 ) //vedo se devo liberare ancora assi
 				{
-					assi=true; break;
+					assi=true;
 				}}
 		}
 
@@ -442,7 +456,6 @@ public class FreeCell extends JFrame implements MouseListener {
 						if(columns[co].canAdd(ca))
 							try {
 								facts.addObjectInput(new MovableFromeCeInCo(cells[j].getId(),co));
-								System.out.println(ca);
 							}
 						catch (Exception e) {
 							e.printStackTrace();}
@@ -551,62 +564,6 @@ public class FreeCell extends JFrame implements MouseListener {
 						catch (Exception e) {
 							e.printStackTrace();}
 					}}
-
-
-				/*	int spostate=0;
-					for(int ca=columns[i].getCards().size()-1;ca>=0;ca--)
-					{
-						Card controllo=columns[i].getCards().get(ca); //se è l'ultima la controllo sicuro
-						boolean trovata=false;
-						boolean fine1=false;
-						if(spostate<=nContemporanee)
-						{
-							if(!(ca==columns[i].getCards().size()-1) && ca!=0) 
-							{
-								Card card=columns[i].getCards().get(ca-1);
-								Card bottom = columns[i].getCards().get(ca); 
-
-								if (bottom.getColor() != card.getColor() &&
-										bottom.getRank() == card.getRank() - 1) {
-									controllo=bottom; 
-									trovata=true;
-									try {
-										facts.addObjectInput(new FaParteDiUnaScala(controllo.getId()));
-									}
-									catch (Exception e) {
-										e.printStackTrace();}
-								}
-								else if(trovata)
-								{
-									 fine1=true;
-								}
-								else  
-								{
-									break;
-								}
-							}
-						}
-
-
-						for(int co=0;co<8;co++)
-						{
-							if(columns[co].canAdd(controllo) && (c!=appenaSpostata) )
-								try {
-									facts.addObjectInput(new MovableInCo(controllo.getId(),co));
-									if(trovata)
-									{
-										spostate++;
-										System.out.println("ne ho trovata una! "+controllo.getId()+co);
-									}
-								}
-							catch (Exception e) {
-								e.printStackTrace();}
-						}
-
-						if(fine1==true) break;
-
-
-				}*/
 			}
 
 		}
@@ -620,9 +577,15 @@ public class FreeCell extends JFrame implements MouseListener {
 		handler.addProgram(facts);
 		InputProgram encoding= new ASPInputProgram();
 		
+
 		
-		
-		if(colonneVuote)
+		if(fine)
+		{
+			handler = new DesktopHandler(new DLVDesktopService("lib/dlv.mingw.exe"));
+			handler.addProgram(facts);
+			encoding.addFilesPath(encodingResourceFine);
+		}
+		else if(colonneVuote)
 		{
 			handler = new DesktopHandler(new DLVDesktopService("lib/dlv.mingw.exe"));
 			handler.addProgram(facts);
@@ -685,7 +648,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		Output o =  handler.startSync();
 		AnswerSets answers= (AnswerSets) o;
 		System.out.println(facts.getPrograms());
-
+		
 		for(AnswerSet a:answers.getAnswersets())
 		{ // per ogni as. il get restituisce un set di as in ordine di ottimalità
 			try {
@@ -799,25 +762,6 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private void removeCard(MoveToCo moveToCo) throws InterruptedException 
 	{
-		/*for(int i=0;i<8;i++)
-		{
-			if(!columns[i].getCards().isEmpty())
-			{
-				if(columns[i].getCards().getLast().getId()==moveToCo.getCaId())
-				{
-					for(int j=0;j<8;j++) 
-					{
-						if(columns[j].getColumn()==moveToCo.getCoId())
-						{
-							appenaSpostata=columns[i].getCards().getLast();
-							columns[j].add(columns[i].remove());
-							break;
-						}
-					}
-				}
-			}
-		}*/
-
 		int column=0;
 
 		for(int i=0;i<8;i++)
@@ -1009,8 +953,6 @@ public class FreeCell extends JFrame implements MouseListener {
 	{
 		while(stop) System.out.print(stop);
 		
-		if(velocizza) { 
-			System.out.println("velocizza");}
 		if(rallenta)
 		{
 			Thread.sleep(2000);

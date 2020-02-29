@@ -73,6 +73,7 @@ moveFromeCeToFinish(Card,Finish)|noMo(Card,Finish):-spostabileDaCellaAFinish(Car
 spostabile(C):-spostabileInCe(C).
 spostabile(C):-spostabileInF(C,F).
 
+
 %regole non scritte
 mossa(C,X):-moveToCe(C,X).
 mossa(C,F):-moveToFi(C,F).
@@ -124,13 +125,13 @@ colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Co
 %vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:11]
 
-:~noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:10] % -------------------->controllare
 
-noInC(Car,C):-no(Cell,C),cell(Car,Cell).
+siVerifica(Car):-not colonnaNonVuota(Col),moveToCo(Car,Col),column(Car,Pos,Col1),column(Car1,Pos1,Col2),Pos=Pos1+1,card(Car1,S1,V1),card(Car,S,V),V1=13,not cHaUnaCartaCheCreaUnaScalaConLei(Car1). 
 
 
-%se commento questa regola vince l'hard e il medium ma non vince hard1
-%:~not colonnaNonVuota(Col),moveToCo(Car,Col),not faParteDiUnaScala(Car). [1:11]
+%C1 ha una carta spostabile che crea una scala con lei?
+cHaUnaCartaCheCreaUnaScalaConLei(C):-card(C,S,V),spostabileInCo(C1,Colonna),card(C1,S1,V1),colore(C,Colore1),colore(C,Colore2),Colore1!=Colore2,V=V1-1.
+
 %:~not colonnaNonVuota(Col),moveFromeCeToColumn(Cell,Col). [1:11]
 
 
@@ -144,7 +145,10 @@ noInC(Car,C):-no(Cell,C),cell(Car,Cell).
 colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).      
 :~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCo(Card,Col),Differenza=P-Position,Costo=7-Differenza. [Costo:10]
 
-									
+%scelgo di mettere nella colonna una carta di valore alto  
+:~noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:10] % -------------------->controllare
+
+					
 
 									%livello 9 ho esaurito le mosse in colonna, devo spostare in cella per forza
 
@@ -173,6 +177,7 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 								%liv5
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
 :~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCe(Card,Cell),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
+:~not colonnaNonVuota(Col),moveToCo(Car,Col),not faParteDiUnaScala(Car),esegui(X). [1:11]
 
 :~scala(C),moveToCo(C,Column). [1:5]
 :~scala(C),moveToCe(C,Column). [1:5]
@@ -203,6 +208,7 @@ colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 
 
 
+
 :~moveToCe(C,F),column(C,P,Col),not colonnaConMenoCarte(Col). [1:2]
 
 
@@ -211,7 +217,7 @@ colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 :~moveToCe(C,F), scala(C). [1:2]
 
 
-
+noInC(Car,C):-no(Cell,C),cell(Car,Cell).
 
 
 

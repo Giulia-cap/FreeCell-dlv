@@ -153,7 +153,8 @@ colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).
 %preferisco liberare una carta bassa da mettere in finish piuttosto che una più alta perchè altrimenti rischio di incartarmi
 :~noToCe(Card,F),prossimaCarta(C),prossimaCarta(C1),C<C1,spostabileInCe(Card),column(C,P,Column),column(Card,P1,Column).  [2:8]
 
-
+%
+:~spostabileInCe(C),column(C,0,Colonna), noToCe(C,Ce). [2:8]
 								%liv 7
 
 	
