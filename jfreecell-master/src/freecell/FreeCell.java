@@ -3,24 +3,17 @@ package freecell;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.TextArea;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -38,7 +31,6 @@ import ai.MoveToCo;
 import ai.MoveToF;
 import ai.NumeroCarte;
 import freecell.Card.Suit;
-import freecell.images.Esegui;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
@@ -48,7 +40,6 @@ import it.unical.mat.embasp.languages.asp.AnswerSet;
 import it.unical.mat.embasp.languages.asp.AnswerSets;
 import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 import it.unical.mat.embasp.specializations.dlv.desktop.DLVDesktopService;
-import javafx.scene.text.Text;
 
 
 public class FreeCell extends JFrame implements MouseListener {	
@@ -123,37 +114,28 @@ public class FreeCell extends JFrame implements MouseListener {
 			catch (Exception e) {
 				e.printStackTrace();
 			}
-			//finishedCells[i].addMouseListener(this);
 		}		
 
 
 		for (int i = 0; i < 8; i++) 
 			columns[i] = new Column(i);
-		//columns[i].addMouseListener(this);
 
-
-		// When someone clicks the background, we want to be able to cancel moves.
-		//getContentPane().addMouseListener(this);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	//	int ret = JOptionPane.showOptionDialog(this, "press ok to start the EASY mode", "start!", JOptionPane.OK_OPTION, JOptionPane.OK_OPTION, null, null, null);
-		//if (ret == JOptionPane.OK_OPTION) {
+	int ret = JOptionPane.showOptionDialog(this, "press ok to start the EASY mode", "start!", JOptionPane.OK_OPTION, JOptionPane.OK_OPTION, null, null, null);
+		if (ret == JOptionPane.OK_OPTION) {
 
 			createGUI();
 			getContentPane().setBackground(BACKGROUND_COLOR);
-
-			// Start the game. Doing this here so the window will be sized correctly.
-
 			start();
-
-			pack(); //grafica
+			pack(); 
 			setVisible(true);
 
 			findMovableCards();
 
 			findSolution();
-			//}
+			}
 	}
 
 	boolean booleana=false;
@@ -172,11 +154,9 @@ public class FreeCell extends JFrame implements MouseListener {
 			columns[i].reset();
 		}
 
-		// Deal
+		
 		deck.shuffle(); //rimescolare
 
-
-		//generaRandom();
 		generaDaFile();
 
 	}
@@ -184,9 +164,9 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void generaDaFile() 
 	{
 		if(level==1)
-			res="resources/easy2.txt";
+			res="resources/easy.txt";
 		else if(level==2)
-			res="resources/medium1.txt";
+			res="resources/medium.txt";
 		else
 			res="resources/hard.txt";
 
@@ -245,22 +225,7 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	}
 
-	private void generaRandom() {
-		for (int i = 0; i < 52; i++) 
-		{
-			int id=i % 8;
-			Card c=deck.draw();
-			columns[id].initAdd(c); //prendo una carta a caso dal mazzo e la metto in una colonna 
-			int p=columns[id].getCards().size();
-			try {
-				//System.out.println(c); System.out.println(p); System.out.println(id);
-				facts.addObjectInput(new Column(c.getId(),p,id));
-			}
-			catch (Exception e) {
-				e.printStackTrace();}
-		}
-
-	}
+	
 
 	private Suit controllaSeme(char seme) {
 		switch(seme)
@@ -342,12 +307,6 @@ public class FreeCell extends JFrame implements MouseListener {
 			}
 		}
 
-		if(res=="resources/hard1.txt"  || res=="resources/medium2.txt") { 
-			try {
-				facts.addObjectInput(new Esegui(2));
-			}
-			catch (Exception e) {
-				e.printStackTrace();}}
 
 		for(int i=0;i<8;i++)
 		{
@@ -578,6 +537,7 @@ public class FreeCell extends JFrame implements MouseListener {
 			}
 
 		}
+
 
 	}
 
@@ -884,7 +844,6 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void createGUI() {
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
-		FlowLayout fbl = new FlowLayout();
 		this.setLayout(gbl);
 
 		bstop=new Button("stoppa");
@@ -930,20 +889,34 @@ public class FreeCell extends JFrame implements MouseListener {
 		for (int i = 0; i < 8; i++) {
 			this.add(columns[i], gbc);
 		}
-
-
+		
+		
+		
+		gbc.anchor = GridBagConstraints.NORTHEAST;
+		gbc.gridy = 1;
+		gbc.gridx = 8;
 		this.add(bstop,gbc);
+		gbc.gridx = 9;
 		this.add(bvelocizza,gbc);
+		gbc.gridx = 10;
 		this.add(brallenta,gbc);
+		
+		
+		gbc.gridx = 9;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
+		JLabel label = new JLabel( mode+" mode!");
+		
+		this.add(label,gbc);
 
 	}
-
+	String mode="EASY";
 
 
 
 	private void checkForVictory() {
 		
-		String mode="MEDIUM";
+		mode="MEDIUM";
 		
 		if(level==2)
 			mode="HARD";
@@ -997,172 +970,16 @@ public class FreeCell extends JFrame implements MouseListener {
 
 
 
-	// mouseReleased behaves better than mouseClicked
+	
 	public void mouseReleased(MouseEvent me) {
-
-
-		/*if (selectedSource == null) {
-			if (me.getSource() instanceof CardSource) {
-				CardSource cs = (CardSource)me.getSource();
-				if (cs.canRemove()) {
-					selectedSource = cs;
-					selectedSource.select();
-				}
-			}
-		}
-		else
-		{
-			if (me.getSource() instanceof CardDestination) {
-				CardDestination cd = (CardDestination)me.getSource();
-				if (cd.canAdd(selectedSource.peek())) {
-					cd.add(selectedSource.remove());
-					selectedSource.unselect();
-					selectedSource = null;
-					autoFill();
-					checkForVictory();
-				}
-				else if (cd == selectedSource) {
-					// If you click the same thing twice, consider that a cancel move.
-					selectedSource.unselect();
-					selectedSource = null;
-				}
-				else {
-					JOptionPane.showMessageDialog(this, "That move is illegal.", "Illegal Move", JOptionPane.ERROR_MESSAGE);
-					selectedSource.unselect();
-					selectedSource = null;
-				}
-			}
-			else {
-				selectedSource.unselect();
-				selectedSource = null;
-			}
-		}*/
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-
-
-
-
 	}
 
-	// Used to detect double-clicks.
-	/*public void mouseClicked(MouseEvent me) {
-		// This check basically ensures that the double-click was our intended
-		// move from the get-go.
-		if (selectedSource == null) {
-			if (me.getClickCount() == 2) {
-				if (me.getSource() instanceof Column) {
-					Column c = (Column)me.getSource();
-					for (int i = 0; i < 4; i++) {
-						if (cells[i].canAdd(c.peek())) {
-							cells[i].add(c.remove());
-							autoFill();
-							checkForVictory();
-							return;
-						}
-					}
 
-					JOptionPane.showMessageDialog(this, "Sorry, there are no free cells.", "Illegal Move", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		}
-	}*/
-
-	// Automatically adds appropriate cards to finished cells
-	private void autoFill() {
-		boolean keepGoing;
-
-		// We keep going as long as something was added last time
-		do {
-			keepGoing = false;
-
-			// Begin by finding out how many finished cells of each color have begun to be populated
-			int numBlacks = 0;
-			int numReds = 0;
-
-			// We'll also keep track of the lowest card found of each color. These values only get used,
-			// however, if there are two finished cells of the corresponding color.
-			int lowestBlack = 14; // We use 14 because all cards are lower than this.
-			int lowestRed = 14;
-
-			for (int i = 0; i < 4; i++) {
-				Card c = finishedCells[i].getTopCard();
-				if (c != null) {
-					if (c.getColor() == Color.BLACK) {
-						numBlacks++;
-
-						if (c.getRank() < lowestBlack) {
-							lowestBlack = c.getRank();
-						}
-					}
-					else {
-						numReds++;
-
-						if (c.getRank() < lowestRed) {
-							lowestRed = c.getRank();
-						}
-					}
-				}
-			}
-
-			// If there weren't two finished cells of a color, we set the corresponding lowest value
-			// to zero to indicate empty.
-			if (numBlacks < 2) {
-				lowestBlack = 0;
-			}
-
-			if (numReds < 2) {
-				lowestRed = 0;
-			}
-
-			// Now, go through the bottoms of the columns and the free cells and try to add if applicable
-			ArrayList<CardSource> sources = new ArrayList<CardSource>();
-			sources.addAll(Arrays.asList(columns));
-			sources.addAll(Arrays.asList(cells));
-
-			for (int i = 0; i < sources.size(); i++) {
-				Card c = sources.get(i).peek();
-
-				if (c != null) {
-					// If the card is an A or a 2, we can just try to add to a finished cell
-					if (c.getRank() <= 2) {
-						for (int j = 0; j < 4; j++) {
-							if (finishedCells[j].canAdd(c)) {
-								finishedCells[j].add(sources.get(i).remove());
-								keepGoing = true;
-								break;
-							}
-						}
-					}
-					else {
-						// If the card is a 3 or greater, we have to check to make sure no cards in the
-						// stacks can still go under us. Only then do we add to a finished cell.
-						if (c.getColor() == Color.BLACK && c.getRank() <= lowestRed + 1) {
-							for (int j = 0; j < 4; j++) {
-								if (finishedCells[j].canAdd(c)) {
-									finishedCells[j].add(sources.get(i).remove());
-									keepGoing = true;
-									break;
-								}
-							}
-						}
-						else if (c.getColor() == Color.RED && c.getRank() <= lowestBlack + 1) {
-							for (int j = 0; j < 4; j++) {
-								if (finishedCells[j].canAdd(c)) {
-									finishedCells[j].add(sources.get(i).remove());
-									keepGoing = true;
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-		} while (keepGoing);
-	}
 
 
 	public void mousePressed(MouseEvent me) { 
@@ -1195,7 +1012,6 @@ public class FreeCell extends JFrame implements MouseListener {
 	{
 		new FreeCell();
 	}
-
 
 
 

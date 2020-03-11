@@ -138,7 +138,7 @@ cHaUnaCartaCheCreaUnaScalaConLei(C):-card(C,S,V),spostabileInCo(C1,Colonna),card
 							%10
 							
 
-%se posso togliere una carta dalle celle vuote, devo cercare di farlo %---------->controllare
+%se posso togliere una carta dalle celle vuote, devo cercare di farlo 
 :~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [2:10]
 
 %dal momento in cui decido di spostare in colonna devo preferire gli spostamanti che liberano assi
@@ -146,7 +146,7 @@ colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).
 :~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCo(Card,Col),Differenza=P-Position,Costo=7-Differenza. [Costo:10]
 
 %scelgo di mettere nella colonna una carta di valore alto  
-:~noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:10] % -------------------->controllare
+:~noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:10]
 
 					
 
@@ -177,7 +177,7 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 								%liv5
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
 :~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCe(Card,Cell),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
-:~not colonnaNonVuota(Col),moveToCo(Car,Col),not faParteDiUnaScala(Car),esegui(X). [1:11]
+
 
 :~scala(C),moveToCo(C,Column). [1:5]
 :~scala(C),moveToCe(C,Column). [1:5]

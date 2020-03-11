@@ -120,10 +120,10 @@ prossimaCarta(C):-card(C,S,1).
 colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Col),column(C,P1,Col),prossimaCarta(C),P1=P-1.
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCo(Card,Col). [1:11]
 
-%se posso togliere una carta dalle celle vuote, devo cercare di farlo %---------->controllare
+%se posso togliere una carta dalle celle vuote, devo cercare di farlo
 :~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [2:11]
 
-:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:11] % -------------------->controllare
+:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:11]
 
 %non devo mettere troppe carte dello stesso colore nelle celle vuote perchè sennò mi incarto
 :~ #count{Card:cell(Card,Cell),colore(Card,"ROSSO")}=3, moveToCe(C,X),colore(C,"ROSSO"). [1:12]
