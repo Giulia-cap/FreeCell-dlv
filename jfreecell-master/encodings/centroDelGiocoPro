@@ -136,8 +136,9 @@ colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).
 
 									%livello 9 ho esaurito le mosse in colonna, devo spostare in cella per forza
 									
+celleOccupate(N):-#count{C:cell(Card,C),Card!=53}=N.	
 %vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish
-:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:9]
+:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),celleOccupate(N), N<3. [1:9]
 
 %non devo mettere nelle finish cell tutte carte dello stesso colore
 :~ #count{Card:cell(Card,Cell),colore(Card,"ROSSO")}>=2, moveToCe(C,X),colore(C,"ROSSO"). [1:9]

@@ -66,8 +66,10 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private Card appenaSpostata;
 	private int nContemporanee=0;
-	
-	private String res="resources/medium2.txt";;
+
+	private int level=1;
+
+	private String res;
 
 	Button bstop;
 	Button brallenta;
@@ -111,9 +113,6 @@ public class FreeCell extends JFrame implements MouseListener {
 				e.printStackTrace();
 			}
 
-
-			Button b=new Button();
-
 			//cells[i].addMouseListener(this);
 
 			finishedCells[i] = new FinishedCell(53,Suit.SPADES,i);
@@ -137,21 +136,26 @@ public class FreeCell extends JFrame implements MouseListener {
 		//getContentPane().addMouseListener(this);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		createGUI();
-		getContentPane().setBackground(BACKGROUND_COLOR);
 
-		// Start the game. Doing this here so the window will be sized correctly.
+	//	int ret = JOptionPane.showOptionDialog(this, "press ok to start the EASY mode", "start!", JOptionPane.OK_OPTION, JOptionPane.OK_OPTION, null, null, null);
+		//if (ret == JOptionPane.OK_OPTION) {
 
-		start();
+			createGUI();
+			getContentPane().setBackground(BACKGROUND_COLOR);
 
-		pack(); //grafica
-		setVisible(true);
+			// Start the game. Doing this here so the window will be sized correctly.
 
-		findMovableCards();
+			start();
 
-		findSolution();
+			pack(); //grafica
+			setVisible(true);
+
+			findMovableCards();
+
+			findSolution();
+			//}
 	}
-	
+
 	boolean booleana=false;
 
 	private void start() 
@@ -179,9 +183,16 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private void generaDaFile() 
 	{
+		if(level==1)
+			res="resources/easy2.txt";
+		else if(level==2)
+			res="resources/medium1.txt";
+		else
+			res="resources/hard.txt";
+
 		char[] carte=new char[168];
 		int j=0;
-	
+
 		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
 		try {
 			// apre il file in lettura
@@ -330,13 +341,13 @@ public class FreeCell extends JFrame implements MouseListener {
 				e.printStackTrace();
 			}
 		}
-		
+
 		if(res=="resources/hard1.txt"  || res=="resources/medium2.txt") { 
 			try {
-			facts.addObjectInput(new Esegui(2));
-		}
-		catch (Exception e) {
-			e.printStackTrace();}}
+				facts.addObjectInput(new Esegui(2));
+			}
+			catch (Exception e) {
+				e.printStackTrace();}}
 
 		for(int i=0;i<8;i++)
 		{
@@ -388,7 +399,7 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private void cercaStrategia()
 	{
-		
+
 		System.out.println("cerca strategia");
 		assi=false;
 		centro=false;
@@ -576,9 +587,9 @@ public class FreeCell extends JFrame implements MouseListener {
 
 		handler.addProgram(facts);
 		InputProgram encoding= new ASPInputProgram();
-		
 
-		
+
+
 		if(fine)
 		{
 			handler = new DesktopHandler(new DLVDesktopService("lib/dlv.mingw.exe"));
@@ -648,7 +659,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		Output o =  handler.startSync();
 		AnswerSets answers= (AnswerSets) o;
 		System.out.println(facts.getPrograms());
-		
+
 		for(AnswerSet a:answers.getAnswersets())
 		{ // per ogni as. il get restituisce un set di as in ordine di ottimalità
 			try {
@@ -724,7 +735,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		blocca();
 
 		findMovableCards();
-			findSolution();
+		findSolution();
 
 
 	}
@@ -878,20 +889,20 @@ public class FreeCell extends JFrame implements MouseListener {
 
 		bstop=new Button("stoppa");
 		bstop.addMouseListener(this);
-		
+
 		brallenta=new Button("rallenta");
 		brallenta.addMouseListener(this);
-		
+
 		bvelocizza=new Button("velocizza");
 		bvelocizza.addMouseListener(this);
-		
-		
+
+
 		gbc.gridy = 0;
 		gbc.insets = new Insets(2, 2, 2, 2);
 		for (int i = 0; i < 4; i++) {
 			this.add(cells[i], gbc);
 		}
-	
+
 
 		this.add(new JPanel() {
 			private static final long serialVersionUID = -6234059593255900935L;
@@ -903,15 +914,15 @@ public class FreeCell extends JFrame implements MouseListener {
 			public Dimension getPreferredSize() {
 				return new Dimension(80, 120);
 			}
-			
+
 		}, gbc);
 
-		
+
 		for (int i = 0; i < 4; i++) {
 			this.add(finishedCells[i], gbc);
 		}
-		
-	
+
+
 
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.NORTH;
@@ -919,8 +930,8 @@ public class FreeCell extends JFrame implements MouseListener {
 		for (int i = 0; i < 8; i++) {
 			this.add(columns[i], gbc);
 		}
-		
-		
+
+
 		this.add(bstop,gbc);
 		this.add(bvelocizza,gbc);
 		this.add(brallenta,gbc);
@@ -931,7 +942,11 @@ public class FreeCell extends JFrame implements MouseListener {
 
 
 	private void checkForVictory() {
-
+		
+		String mode="MEDIUM";
+		
+		if(level==2)
+			mode="HARD";
 
 		for (int i = 0; i < 4; i++) {
 			if (!finishedCells[i].isComplete()) {
@@ -939,10 +954,26 @@ public class FreeCell extends JFrame implements MouseListener {
 			}
 		}
 
-		int ret = JOptionPane.showOptionDialog(this, "Congratulations! You've won! Would you like to play again?", "Victory!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-		if (ret == JOptionPane.YES_OPTION) {
-			this.start();
+		if(level>=3)
+		{
+			int ret = JOptionPane.showOptionDialog(this, "Congratulations! You've won! Would you like to play again?", "Victory!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			if (ret == JOptionPane.YES_OPTION) {
+				level=1;
+				this.start();
 
+			}
+		}
+
+		else
+		{
+			rallenta=true;
+			velocizza=false;
+			int ret = JOptionPane.showOptionDialog(this, "Congratulations! You've won! Would you like to play "+ mode+ " mode?", "Victory!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			if (ret == JOptionPane.YES_OPTION) {
+				level++;
+				this.start();
+
+			}
 		}
 
 	}
@@ -952,7 +983,7 @@ public class FreeCell extends JFrame implements MouseListener {
 	public void blocca() throws InterruptedException
 	{
 		while(stop) System.out.print(stop);
-		
+
 		if(rallenta)
 		{
 			Thread.sleep(2000);
@@ -1133,7 +1164,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		} while (keepGoing);
 	}
 
-	// Because we implement MouseListener, we have to include these empty methods
+
 	public void mousePressed(MouseEvent me) { 
 
 
@@ -1146,14 +1177,14 @@ public class FreeCell extends JFrame implements MouseListener {
 		}
 		else if(me.getSource()==brallenta)
 		{
-				rallenta=true;
-				velocizza=false;
-			
+			rallenta=true;
+			velocizza=false;
+
 		}
 		else if(me.getSource()==bvelocizza)
 		{
-				velocizza=true;
-				rallenta=false;
+			velocizza=true;
+			rallenta=false;
 		}
 	}
 	public void mouseEntered(MouseEvent me) {}

@@ -115,26 +115,18 @@ colonna(0). colonna(1). colonna(2). colonna(3). colonna(4). colonna(5). colonna(
 %per prima cosa faccio tutti gli spostamenti all'interno delle colonne, senza ovviamente dividere scale già formate e senza considerare una colonna vuota					
 :~spostabileInCo(Car,Col),not scala(Car),noToCo(Car,Col), colonnaNonVuota(Col). [1:11]
 
-%a parità scelgo quelle che spostano istantaneamente una carta da mettere in finish
+%a parità scelgo quelle che spostano istantaneamente una carta da mettere in finish (spostando la carta in colonna)
 prossimaCarta(C):-card(C,S,1).
 colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Col),column(C,P1,Col),prossimaCarta(C),P1=P-1.
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCo(Card,Col). [1:11]
 
-%vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish
-:~column(Card,P,Column),column(Ca,P1,Column),card(Ca,S,1),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [3:11]
+%vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish  (spostando la carta in cella)
+:~column(Card,P,Column),column(Ca,P1,Column),card(Ca,S,1),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:11]
 
 
-%se posso togliere una carta dalle celle vuote, devo cercare di farlo %---------->controllare
+%se posso togliere una carta dalle celle vuote, devo cercare di farlo 
 :~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [2:11]
 
-
-:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:11] % -------------------->controllare
-
-
-%se ho una carta di valore alto nelle celle che possono sbloccare delle colonne e ho una cella vuota, devo preferire sposter quella
-noInC(Car,C):-no(Cell,C),cell(Car,Cell).
-%devi trovare un modo per verificare se c'è una carta che si può accodare a quella che sposti dalla cella alla colonna
-%:~not colonnaNonVuota(C),noInC(Car,C),card(Car,S,V),spostabileInCe(
 
 							%10
 
@@ -167,17 +159,16 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 :~column(Card,P,Column),colonnaConProssima(Column,Position), noToCo(Card,Col),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
 %dal momento in cui decido di spostare in cella devo preferire spostamenti che liberano carte da mettere in finish
 :~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
+
+% dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
+:~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCe(Card,Cell),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
 				
 
 								%liv5
-% dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
-:~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCe(Card,Cell),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
 
+%limito la separazione di scale già formate
 :~scala(C),moveToCo(C,Column). [1:5]
 :~scala(C),moveToCe(C,Column). [1:5]
-
-
-%:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V). [V:5]
 
 
 							
@@ -200,10 +191,10 @@ carteNellaColonna(C,N):-column(Ca,P,C),colonnaNonVuota(C),#count{Card:column(Car
 menoCarte(Nu):-#min{N:carteNellaColonna(C,N)}=Nu.
 colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 
+											%livello 2
 
 
-
-
+%preferisco spostamenti  da colonne con meno carte
 :~moveToCe(C,F),column(C,P,Col),not colonnaConMenoCarte(Col). [1:2]
 
 
