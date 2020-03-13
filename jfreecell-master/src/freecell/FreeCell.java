@@ -171,7 +171,7 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void generaDaFile() 
 	{
 		if(level==1)
-			res="resources/medium.txt";
+			res="resources/easy.txt";
 		else if(level==2)
 			res="resources/medium.txt";
 		else
@@ -570,7 +570,9 @@ public class FreeCell extends JFrame implements MouseListener {
 			handler.addProgram(facts);
 			encoding.addFilesPath(encodingResourceColonneLibere);
 		}
-		else if(assi) {   
+		else if(assi) {
+			handler = new DesktopHandler(new DLVDesktopService("lib/dlv.mingw.exe"));
+			handler.addProgram(facts);
 			encoding.addFilesPath(encodingResourceAssi);
 		}
 		else if(centro) { 

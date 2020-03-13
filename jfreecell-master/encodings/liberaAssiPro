@@ -145,6 +145,10 @@ colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).
 %a parità preferisco spostamneti in cella di carte che liberano spostabili
 :~prossimaInScala(Card),column(Card,P,Column),spostabileInCe(C),column(C,P1,Column),P1=P+1,noToCe(C,Cell). [1:8]
 
+
+%se ho un k solo in una colonna devo aggiungere carte li perchè così inizio a sbloccare altre colonne senza intaccare altro
+:~colonnaconSoloUnK(C), spostabileInCo(Car,C),not moveToCo(Car,C). [1:11]
+colonnaconSoloUnK(C):-column(Card,0,C),card(Card,S,13),#count{Ca:column(Ca,P,C)}=1.
 								%liv 7
 
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
