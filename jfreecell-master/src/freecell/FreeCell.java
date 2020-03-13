@@ -139,9 +139,16 @@ public class FreeCell extends JFrame implements MouseListener {
 	}
 
 	boolean booleana=false;
+	JLabel label = new JLabel();
 
 	private void start() 
 	{
+		gbc.gridx = 9;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
+		label.setText("Livello"+" "+level);
+		
+		this.add(label,gbc);
 		// Reset
 		for (int i = 0; i < 4; i++) 
 		{
@@ -164,7 +171,7 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void generaDaFile() 
 	{
 		if(level==1)
-			res="resources/easy.txt";
+			res="resources/hard3.txt";
 		else if(level==2)
 			res="resources/medium.txt";
 		else
@@ -368,7 +375,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		for(int i=0;i<8;i++)
 		{
 			ncarte+=columns[i].getCards().size();
-			if(columns[i].getCards().isEmpty()) {colonneVuote=true; System.out.println("la presunta colonna vuota è:"+i);}
+			if(columns[i].getCards().isEmpty()) {colonneVuote=true;}
 			//if(assi) break;
 			for(int j=0;j<columns[i].getCards().size();j++) {
 				if((!columns[i].getCards().isEmpty()) && columns[i].getCards().get(j).getRank()==1 ) //vedo se devo liberare ancora assi
@@ -840,10 +847,10 @@ public class FreeCell extends JFrame implements MouseListener {
 	}
 
 	//------------------GRAFICA-----------------
-
+	GridBagConstraints gbc = new GridBagConstraints();
 	private void createGUI() {
 		GridBagLayout gbl = new GridBagLayout();
-		GridBagConstraints gbc = new GridBagConstraints();
+		
 		this.setLayout(gbl);
 
 		bstop=new Button("stoppa");
@@ -900,21 +907,15 @@ public class FreeCell extends JFrame implements MouseListener {
 		this.add(bvelocizza,gbc);
 		gbc.gridx = 10;
 		this.add(brallenta,gbc);
-		
-		
-		gbc.gridx = 9;
-		gbc.anchor = GridBagConstraints.CENTER;
-		
-		JLabel label = new JLabel( mode+" mode!");
-		
-		this.add(label,gbc);
 
 	}
-	String mode="EASY";
+	
 
 
 
 	private void checkForVictory() {
+		String mode;
+		
 		
 		mode="MEDIUM";
 		
