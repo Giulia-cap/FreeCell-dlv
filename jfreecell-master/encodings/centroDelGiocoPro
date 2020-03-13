@@ -104,16 +104,11 @@ colore(C,"ROSSO"):-card(C,"HEARTS",V).
 colore(C,"NERO"):-card(C,"SPADES",V).
 colore(C,"NERO"):-card(C,"CLUBS",V).
 
-%non è possibile spostare una carta in una colonna vuota se questa è l'unica carta della colonna in cui si trova
-:-not colonnaNonVuota(C),moveToCo(Card,C), #count{Ca:column(Card,P,Column),column(Ca,P1,Column)}=1.
-
-colonnaNonVuota(C):-column(Card,Pos,C).	
-
 
 
 							%11
 %per prima cosa faccio tutti gli spostamenti all'interno delle colonne, senza ovviamente dividere scale già formate e senza considerare una colonna vuota					
-:~spostabileInCo(Car,Col),not scala(Car),noToCo(Car,Col), colonnaNonVuota(Col). [1:11]
+:~spostabileInCo(Car,Col),not scala(Car),noToCo(Car,Col). [1:11]
 
 %a parità scelgo quelle che spostano istantaneamente una carta da mettere in finish
 prossimaCarta(C):-card(C,S,1).
@@ -123,7 +118,6 @@ colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Co
 %se posso togliere una carta dalle celle vuote, devo cercare di farlo
 :~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [2:11]
 
-:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V),not scala(Car) . [V:11]
 
 %non devo mettere troppe carte dello stesso colore nelle celle vuote perchè sennò mi incarto
 :~ #count{Card:cell(Card,Cell),colore(Card,"ROSSO")}=3, moveToCe(C,X),colore(C,"ROSSO"). [1:12]
@@ -173,9 +167,6 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 
 
 								%liv5
-
-
-%:~not colonnaNonVuota(C),noToCo(Car,C),card(Car,S,V). [V:5]
 							
 
 
@@ -189,7 +180,7 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 
 
 %preferisco togliere carte da colonne con meno carte
-carteNellaColonna(C,N):-column(Ca,P,C),colonnaNonVuota(C),#count{Card:column(Card,P1,C)}=N.
+carteNellaColonna(C,N):-column(Ca,P,C),#count{Card:column(Card,P1,C)}=N.
 menoCarte(Nu):-#min{N:carteNellaColonna(C,N)}=Nu.
 colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 

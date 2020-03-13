@@ -171,7 +171,7 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void generaDaFile() 
 	{
 		if(level==1)
-			res="resources/hard3.txt";
+			res="resources/medium.txt";
 		else if(level==2)
 			res="resources/medium.txt";
 		else
@@ -554,6 +554,7 @@ public class FreeCell extends JFrame implements MouseListener {
 
 		handler.addProgram(facts);
 		InputProgram encoding= new ASPInputProgram();
+		encoding.clearAll();
 
 
 

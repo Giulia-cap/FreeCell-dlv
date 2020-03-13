@@ -90,8 +90,6 @@ cartaMossa(C):-moveFromeCeToFinish(C,F).
 :-#count{C,X:mossa(C,X)}<1.
 :-#count{C,X:mossa(C,X)}>1.
 
-%non è possibile spostare una carta in una colonna vuota se questa è l'unica carta della colonna in cui si trova
-:-not colonnaNonVuota(C),moveToCo(Card,C), #count{Ca:column(Card,P,Column),column(Ca,P1,Column)}=1.
 
 
 %se posso mettere una carta nelle finish devo metterla 
@@ -113,7 +111,7 @@ colonna(0). colonna(1). colonna(2). colonna(3). colonna(4). colonna(5). colonna(
 
 							%11
 %per prima cosa faccio tutti gli spostamenti all'interno delle colonne, senza ovviamente dividere scale già formate e senza considerare una colonna vuota					
-:~spostabileInCo(Car,Col),not scala(Car),noToCo(Car,Col), colonnaNonVuota(Col). [1:11]
+:~spostabileInCo(Car,Col),not scala(Car),noToCo(Car,Col). [1:11]
 
 %a parità scelgo quelle che spostano istantaneamente una carta da mettere in finish (spostando la carta in colonna)
 prossimaCarta(C):-card(C,S,1).
@@ -187,7 +185,7 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 
 
 %preferisco togliere carte da colonne con meno carte
-carteNellaColonna(C,N):-column(Ca,P,C),colonnaNonVuota(C),#count{Card:column(Card,P1,C)}=N.
+carteNellaColonna(C,N):-column(Ca,P,C),#count{Card:column(Card,P1,C)}=N.
 menoCarte(Nu):-#min{N:carteNellaColonna(C,N)}=Nu.
 colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 
