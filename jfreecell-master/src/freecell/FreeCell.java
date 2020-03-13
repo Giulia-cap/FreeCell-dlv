@@ -171,11 +171,11 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void generaDaFile() 
 	{
 		if(level==1)
-			res="resources/easy.txt";
+			res="resources/hard2.txt";
 		else if(level==2)
-			res="resources/medium.txt";
+			res="resources/easy2.txt";
 		else
-			res="resources/hard.txt";
+			res="resources/medium.txt";
 
 		char[] carte=new char[168];
 		int j=0;

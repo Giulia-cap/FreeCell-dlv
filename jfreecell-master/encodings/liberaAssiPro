@@ -119,7 +119,7 @@ colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Co
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCo(Card,Col). [1:11]
 
 %vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish  (spostando la carta in cella)
-:~column(Card,P,Column),column(Ca,P1,Column),card(Ca,S,1),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:11]
+:~column(Card,P,Column),column(Ca,P1,Column),card(Ca,S,1),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),celleOccupate(N), N<3. [1:11]
 
 
 %se posso togliere una carta dalle celle vuote, devo cercare di farlo 
