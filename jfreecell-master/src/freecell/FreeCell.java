@@ -75,7 +75,7 @@ public class FreeCell extends JFrame implements MouseListener {
 	//private static String encodingResourceAssi="encodings/liberaAssi";
 	private static String encodingResourceAssi="encodings/liberaAssiPro";
 	//private static String encodingResourceCentro="encodings/centroDelGioco";
-	private static String encodingResourceCentro="encodings/centroDelGiocoPro";
+	private static String encodingResourceCentro="encodings/liberaAssiPro";
 	private static String encodingResourceFine="encodings/giocoQuasiFinito";
 	private static String encodingResourceColonneLibere="encodings/giocoConColonneLibere";
 	private static String encodingResource="encodings/freeCell";
@@ -123,7 +123,7 @@ public class FreeCell extends JFrame implements MouseListener {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	int ret = JOptionPane.showOptionDialog(this, "press ok to start the EASY mode", "start!", JOptionPane.OK_OPTION, JOptionPane.OK_OPTION, null, null, null);
+		int ret = JOptionPane.showOptionDialog(this, "press ok to start the EASY mode", "start!", JOptionPane.OK_OPTION, JOptionPane.OK_OPTION, null, null, null);
 		if (ret == JOptionPane.OK_OPTION) {
 
 			createGUI();
@@ -135,7 +135,7 @@ public class FreeCell extends JFrame implements MouseListener {
 			findMovableCards();
 
 			findSolution();
-			}
+		}
 	}
 
 	boolean booleana=false;
@@ -145,9 +145,9 @@ public class FreeCell extends JFrame implements MouseListener {
 	{
 		gbc.gridx = 9;
 		gbc.anchor = GridBagConstraints.CENTER;
-		
+
 		label.setText("Livello"+" "+level);
-		
+
 		this.add(label,gbc);
 		// Reset
 		for (int i = 0; i < 4; i++) 
@@ -161,7 +161,7 @@ public class FreeCell extends JFrame implements MouseListener {
 			columns[i].reset();
 		}
 
-		
+
 		deck.shuffle(); //rimescolare
 
 		generaDaFile();
@@ -171,11 +171,11 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void generaDaFile() 
 	{
 		if(level==1)
-			res="resources/hard2.txt";
+			res="resources/medium2.txt";
 		else if(level==2)
-			res="resources/easy2.txt";
-		else
 			res="resources/medium.txt";
+		else
+			res="resources/hard.txt";
 
 		char[] carte=new char[168];
 		int j=0;
@@ -232,7 +232,7 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	}
 
-	
+
 
 	private Suit controllaSeme(char seme) {
 		switch(seme)
@@ -366,7 +366,6 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void cercaStrategia()
 	{
 
-		System.out.println("cerca strategia");
 		assi=false;
 		centro=false;
 		fine=false;
@@ -530,7 +529,6 @@ public class FreeCell extends JFrame implements MouseListener {
 
 				if(!(tmp.isEmpty())) {
 					Card papabile=tmp.getLast();
-
 					for(int co=0;co<8;co++)
 					{
 						if(columns[co].canAdd(papabile) && co!=i &&(papabile!=appenaSpostata) && (c!=appenaSpostata) )
@@ -709,8 +707,12 @@ public class FreeCell extends JFrame implements MouseListener {
 
 
 	}
+
+
+
 	private void removeCard(MoveToCe moveToC) throws InterruptedException 
 	{
+
 		for(int i=0;i<4;i++)
 		{
 			if(cells[i].getId()==moveToC.getCe())
@@ -741,6 +743,26 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	}
 
+	private int verifica(Card daMuovere)
+	{
+
+		for(int i=0;i<cells.length;i++)
+		{
+			
+			if(cells[i].getIdCarta()<53)
+			{
+				System.out.println("vedi "+cells[i].getId());
+				Card bottom=cells[i].getCard();
+				if (bottom.getColor() != daMuovere.getColor() &&
+						bottom.getRank() == daMuovere.getRank() + 1)
+				{
+					return i;
+				}
+			}
+		}
+		return 6;
+	}
+
 	private void removeCard(MoveToCo moveToCo) throws InterruptedException 
 	{
 		int column=0;
@@ -759,13 +781,30 @@ public class FreeCell extends JFrame implements MouseListener {
 				{
 					if(columns[i].getCards().get(j).getId()==moveToCo.getCaId()) //individuo la carta che devo spostare
 					{
+
+						if(colonneVuote && !assi)
+						{
+							int cell=verifica(columns[i].getCards().get(j));
+
+
+							if(cell!=6)
+							{
+								appenaSpostata=cells[cell].getCard();
+								columns[column].add(cells[cell].remove());
+								break;
+							}
+
+
+						}
+
+
+
 						appenaSpostata=columns[i].getCards().get(j);
 						//System.out.println("appena spostata: "+appenaSpostata);
 						if(j!=columns[i].getCards().size()-1) //se non è l'ultima 
 						{
 							for(int k=j;k<columns[i].getCards().size();) //sposto tutte le  carte a partire da quella
 							{
-								System.out.println(columns[i].getCards().size());
 								if(columns[column].canAdd((columns[i].getCards().get(j))))
 									columns[column].add(columns[i].removeI(j));
 								else break;
@@ -853,7 +892,7 @@ public class FreeCell extends JFrame implements MouseListener {
 	GridBagConstraints gbc = new GridBagConstraints();
 	private void createGUI() {
 		GridBagLayout gbl = new GridBagLayout();
-		
+
 		this.setLayout(gbl);
 
 		bstop=new Button("stoppa");
@@ -899,9 +938,9 @@ public class FreeCell extends JFrame implements MouseListener {
 		for (int i = 0; i < 8; i++) {
 			this.add(columns[i], gbc);
 		}
-		
-		
-		
+
+
+
 		gbc.anchor = GridBagConstraints.NORTHEAST;
 		gbc.gridy = 1;
 		gbc.gridx = 8;
@@ -912,16 +951,16 @@ public class FreeCell extends JFrame implements MouseListener {
 		this.add(brallenta,gbc);
 
 	}
-	
+
 
 
 
 	private void checkForVictory() {
 		String mode;
-		
-		
+
+
 		mode="MEDIUM";
-		
+
 		if(level==2)
 			mode="HARD";
 
@@ -974,7 +1013,7 @@ public class FreeCell extends JFrame implements MouseListener {
 
 
 
-	
+
 	public void mouseReleased(MouseEvent me) {
 	}
 

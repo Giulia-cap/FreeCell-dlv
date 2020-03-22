@@ -112,7 +112,6 @@ colore(C,"NERO"):-card(C,"CLUBS",V).
 colonnaNonVuota(C):-column(Card,Pos,C).	
 
 
-
 							%11
 %per prima cosa faccio tutti gli spostamenti all'interno delle colonne, senza ovviamente dividere scale già formate e senza considerare una colonna vuota					
 :~spostabileInCo(Car,Col),not scala(Car),noToCo(Car,Col), colonnaNonVuota(Col). [1:11]
@@ -219,7 +218,7 @@ colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 
 noInC(Car,C):-no(Cell,C),cell(Car,Cell).
 
-
+:-not colonnaNonVuota(Column),moveFromeCeToColumn(C,Column).
 
 
 

@@ -90,7 +90,7 @@ cartaMossa(C):-moveFromeCeToFinish(C,F).
 :-#count{C,X:mossa(C,X)}<1.
 :-#count{C,X:mossa(C,X)}>1.
 
-
+assi(1):-#count{Card:column(Card,P,C),card(Card,S,1)}>=1.
 
 %se posso mettere una carta nelle finish devo metterla 
 :-spostabileInF(C,F),moveToCe(C1,X).
@@ -118,12 +118,20 @@ prossimaCarta(C):-card(C,S,1).
 colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Col),column(C,P1,Col),prossimaCarta(C),P1=P-1.
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCo(Card,Col). [1:11]
 
-%vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish  (spostando la carta in cella)
-:~column(Card,P,Column),column(Ca,P1,Column),card(Ca,S,1),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),celleOccupate(N), N<3. [1:11]
-
-
 %se posso togliere una carta dalle celle vuote, devo cercare di farlo 
 :~spostabileDaCellaAColonna(Cell,Column),no(Cell,Column). [2:11]
+
+
+
+%-----------------------in centro non c'è    X
+%vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish  (spostando la carta in cella)
+%:~ column(Card,P,Column),column(Ca,P1,Column),card(Ca,S,1),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),celleOccupate(N), N>=2. [1:11]
+
+%------------è solo in assi   X l'ho estesa a tutti
+%se ho un k solo in una colonna devo aggiungere carte li perchè così inizio a sbloccare altre colonne senza intaccare altro
+:~  colonnaconSoloUnK(C), spostabileInCo(Car,C),not moveToCo(Car,C). [1:11]
+colonnaconSoloUnK(C):-column(Card,0,C),card(Card,S,13),#count{Ca:column(Ca,P,C)}=1.
+
 
 
 							%10
@@ -132,27 +140,61 @@ colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Co
 colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).      
 :~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCo(Card,Col),Differenza=P-Position,Costo=7-Differenza. [Costo:10]
 
+%---------------------in assi non c'è    per questo ho cambiato livello e l'ho esteso a tutti
+%non devo mettere troppe carte dello stesso colore nelle celle vuote perchè sennò mi incarto
+:~ #count{Card:cell(Card,Cell),colore(Card,"ROSSO")}=3, moveToCe(C,X),colore(C,"ROSSO"). [1:10]
+:~ #count{Card:cell(Card,Cell),colore(Card,"NERO")}=3,moveToCe(C,X),colore(C,"NERO"). [1:10]
+
 
 									%livello 9 ho esaurito le mosse in colonna, devo spostare in cella per forza
-									
+								
+%-------------------------in assi è così							
+%vedo poi se ci sono spostamenti che liberano in una sola mossa una carta da mettere nelle finish
+:~ assi(1),column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:9]
+
+
+%------------------in centro è così	  ci sta perchè si presume che qui devo stare più attenta alle celle che occupo
+celleOccupate(N):-#count{C:cell(Card,C),Card!=53}=N.	
 %vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish
-:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:9]
-										
+:~not assi(1),column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),celleOccupate(N), N<2. [1:9]
+
+
+%--------------c'è solo in centro
+%non devo mettere nelle finish cell tutte carte dello stesso colore
+%:~ not assi(1), #count{Card:cell(Card,Cell),colore(Card,"ROSSO")}>=2, moveToCe(C,X),colore(C,"ROSSO"). [1:9]
+%:~not assi(1), #count{Card:cell(Card,Cell),colore(Card,"NERO")}>=2,moveToCe(C,X),colore(C,"NERO"). [1:9]
+
+	
 										%liv 8
 %preferisco spostare una carta che libera una colonna 
 :~spostabileInCe(C),column(C,0,Colonna), noToCe(C,Ce). [2:8]
 
+
+%-----------in assi è così
 %a parità preferisco spostamneti in cella di carte che liberano spostabili
-:~prossimaInScala(Card),column(Card,P,Column),spostabileInCe(C),column(C,P1,Column),P1=P+1,noToCe(C,Cell). [1:8]
+:~assi(1),prossimaInScala(Card),column(Card,P,Column),spostabileInCe(C),column(C,P1,Column),P1=P+1,noToCe(C,Cell). [1:8]
 
 
-%se ho un k solo in una colonna devo aggiungere carte li perchè così inizio a sbloccare altre colonne senza intaccare altro
-:~colonnaconSoloUnK(C), spostabileInCo(Car,C),not moveToCo(Car,C). [1:11]
-colonnaconSoloUnK(C):-column(Card,0,C),card(Card,S,13),#count{Ca:column(Ca,P,C)}=1.
+%---------------in centro è così
+%a parità preferisco spostamneti in cella di carte che liberano spostabili
+:~ not assi(1),prossimaInScala(Card),not scala(Card),column(Card,P,Column),spostabileInCe(C),column(C,P1,Column),P1=P+1,noToCe(C,Cell). [1:8]
+
+
+%--------------è solo in centro
+%preferisco liberare una carta bassa da mettere in finish piuttosto che una più alta perchè altrimenti rischio di incartarmi
+:~ not assi(1),noToCe(Card,F),prossimaCarta(C),prossimaCarta(C1),C<C1,spostabileInCe(Card),column(C,P,Column),column(Card,P1,Column),not scala(Card).  [2:8]
+
+%
+%:~ not assi(1),spostabileInCe(C),column(C,0,Colonna), noToCe(C,Ce). [2:8]
+%----------------------------------------------
+
+
 								%liv 7
 
+
+%--------------è solo in assi
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
-:~spostabileInCe(Card),column(Card,P,Column),colonnaConAssi(Column,Position),Differenza=P-Position,Costo=7-Differenza. [Costo:7]	
+:~ assi(1), spostabileInCe(Card),column(Card,P,Column),colonnaConAssi(Column,Position),Differenza=P-Position,Costo=7-Differenza. [Costo:7]	
 							
 								%liv 6
 %dal momento in cui decido di spostare in colonna devo preferire spostamenti che liberano carte da mettere in finish
@@ -162,22 +204,25 @@ colonnaConProssima(Col,P):-column(C,P,Col),prossimaCarta(C).
 %dal momento in cui decido di spostare in cella devo preferire spostamenti che liberano carte da mettere in finish
 :~column(Card,P,Column),colonnaConProssima(Column,Position), noToCe(Card,Cel),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
 
+
+%---------------non è in centro regola incriminatoria!!!!!!!!!!!!!!!!!!!!!!
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
-:~column(Card,P,Column),colonnaConAssi(Column,Position), moveToCe(Card,Cell),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
+%:~ assi(1),column(Card,P,Column),colonnaConAssi(Column,Position), moveToCe(Card,Cell),Differenza=P-Position,Costo=7-Differenza. [Costo:6]
 				
 
 								%liv5
 
+
+%--------------non è in centro   X esteso a tutti
 %limito la separazione di scale già formate
-:~scala(C),moveToCo(C,Column). [1:5]
-:~scala(C),moveToCe(C,Column). [1:5]
+:~ scala(C),moveToCo(C,Column). [1:5]
+:~ scala(C),moveToCe(C,Column). [1:5]
 
 
-							
+%--------------non è in centro						
 %non devo mettere nelle finish cell tutte carte dello stesso colore
-:~ #count{Card:cell(Card,Cell),colore(Card,"ROSSO")}>=2, moveToCe(C,X),colore(C,"ROSSO"). [1:5]
-:~ #count{Card:cell(Card,Cell),colore(Card,"NERO")}>=2,moveToCe(C,X),colore(C,"NERO"). [1:5]		
-							
+:~  #count{Card:cell(Card,Cell),colore(Card,"ROSSO")}>=2, moveToCe(C,X),colore(C,"ROSSO"). [1:5]
+:~ #count{Card:cell(Card,Cell),colore(Card,"NERO")}>=2,moveToCe(C,X),colore(C,"NERO"). [1:5]							
 
 
 										%livello 4
@@ -193,22 +238,44 @@ carteNellaColonna(C,N):-column(Ca,P,C),#count{Card:column(Card,P1,C)}=N.
 menoCarte(Nu):-#min{N:carteNellaColonna(C,N)}=Nu.
 colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 
+										%3
+
+%----------------è solo in centro
+:~ not assi(1),moveToCe(C,F),column(C,P,Col),not colonnaConMenoCarte(Col). [1:3]
+
+
+
 											%livello 2
 
-
+%--------------non è in centro
 %preferisco spostamenti  da colonne con meno carte
-:~moveToCe(C,F),column(C,P,Col),not colonnaConMenoCarte(Col). [1:2]
+:~assi(1),moveToCe(C,F),column(C,P,Col),not colonnaConMenoCarte(Col). [1:2]
 
 
 %se una carta fa parte di una scala non la voglio spostare
-:~moveToCo(C,F), scala(C). [1:2]
-:~moveToCe(C,F), scala(C). [1:2]
+:~assi(1),moveToCo(C,F), scala(C). [1:2]
+:~assi(1),moveToCe(C,F), scala(C). [1:2]
+%----------------------------------------
+
+%preferisco spostare una carta che libera una colonna 
+%:~spostabileInCe(C),column(C,0,Colonna), noToCe(C,Ce). [1:2]
+
+
+%per prima cosa faccio tutti gli spostamenti all'interno delle colonne, senza ovviamente dividere scale già formate e senza considerare una colonna vuota					
+:~spostabileInCo(Car,Col),not scala(Car),noToCo(Car,Col). [1:2]   %poi sposta al livello 1
+
+
+%se una carta la posso spostare in due colonne diverse, scelgo la colonna con più carte
+colonnaConPocheCarte(C):-colonna(C),#count{Card:column(Card,P,C)}<=3.
+%:~colonnaConPocheCarte(C),spostabileInCo(Card,C),spostabileInCo(Card,Altra),Card!=Altra, moveToCo(Card,C). [1:1]
+
+
+%se posso liberare una colonna spostando una carta in colonna, lo faccio
+:~column(C,0,Column),spostabileInCo(C,Col),noToCo(C,Col). [1:1]
 
 
 
-
-
-
+:-moveToCe(X,Y),moveToCo(X,Y). 
 
 
 
