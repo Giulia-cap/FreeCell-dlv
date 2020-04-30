@@ -125,15 +125,6 @@ colonnaConProssimaIstantanea(Col):-spostabile(Spostabile),column(Spostabile,P,Co
 :~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:11]
 
 
-siVerifica(Car):-not colonnaNonVuota(Col),moveToCo(Car,Col),column(Car,Pos,Col1),column(Car1,Pos1,Col2),Pos=Pos1+1,card(Car1,S1,V1),card(Car,S,V),V1=13,not cHaUnaCartaCheCreaUnaScalaConLei(Car1). 
-
-
-%C1 ha una carta spostabile che crea una scala con lei?
-cHaUnaCartaCheCreaUnaScalaConLei(C):-card(C,S,V),spostabileInCo(C1,Colonna),card(C1,S1,V1),colore(C,Colore1),colore(C,Colore2),Colore1!=Colore2,V=V1-1.
-
-%:~not colonnaNonVuota(Col),moveFromeCeToColumn(Cell,Col). [1:11]
-
-
 							%10
 							
 
@@ -216,7 +207,6 @@ colonnaConMenoCarte(C):-carteNellaColonna(C,N),menoCarte(N).
 :~moveToCe(C,F), scala(C). [1:2]
 
 
-noInC(Car,C):-no(Cell,C),cell(Car,Cell).
 
 :-not colonnaNonVuota(Column),moveFromeCeToColumn(C,Column).
 

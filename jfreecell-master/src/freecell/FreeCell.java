@@ -73,13 +73,11 @@ public class FreeCell extends JFrame implements MouseListener {
 
 	private CardSource selectedSource;
 	//private static String encodingResourceAssi="encodings/liberaAssi";
-	private static String encodingResourceAssi="encodings/liberaAssiPro";
+	private static String encodingResourceAssi="encodings/freeCellAI";
 	//private static String encodingResourceCentro="encodings/centroDelGioco";
-	private static String encodingResourceCentro="encodings/liberaAssiPro";
+	private static String encodingResourceCentro="encodings/freeCellAI";
 	private static String encodingResourceFine="encodings/giocoQuasiFinito";
 	private static String encodingResourceColonneLibere="encodings/giocoConColonneLibere";
-	private static String encodingResource="encodings/freeCell";
-	private static String instanceResource="encodings/instance";
 	public InputProgram facts;
 
 	public FreeCell() 
@@ -171,7 +169,7 @@ public class FreeCell extends JFrame implements MouseListener {
 	private void generaDaFile() 
 	{
 		if(level==1)
-			res="resources/medium2.txt";
+			res="resources/easy.txt";
 		else if(level==2)
 			res="resources/medium.txt";
 		else
@@ -180,7 +178,7 @@ public class FreeCell extends JFrame implements MouseListener {
 		char[] carte=new char[168];
 		int j=0;
 
-		////////////////////////METTO TUTTO IN UN ARRAY///////////////////////////////////////////////
+		
 		try {
 			// apre il file in lettura
 			FileReader filein = new FileReader(res);
