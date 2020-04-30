@@ -142,19 +142,21 @@ colonnaConAssi(C,P):-column(Card,P,C),card(Card,S,1).
 
 
 									%livello 9
+								
 							
 %vedo poi se ci sono spostamenti che liberano in una sola mossa una carta da mettere nelle finish
-:~,column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),assi(1). [1:9]
+:~ assi(1),column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel). [1:9]
 
 
 celleOccupate(N):-#count{C:cell(Card,C),Card!=53}=N.	
 %vedo poi se ci sono spostamenti che libera in una sola mossa una carta da mettere nelle finish
-:~column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),celleOccupate(N), N<2,not assi(1). [1:9]
+:~not assi(1),column(Card,P,Column),colonnaConProssimaIstantanea(Column), noToCe(Card,Cel),celleOccupate(N), N<2. [1:9]
 
 	
 										%liv 8
 %preferisco spostare una carta che libera una colonna 
 :~spostabileInCe(C),column(C,0,Colonna), noToCe(C,Ce). [2:8]
+
 
 %a parità preferisco spostamneti in cella di carte che liberano spostabili
 :~ prossimaInScala(Card),not scala(Card),column(Card,P,Column),spostabileInCe(C),column(C,P1,Column),P1=P+1,noToCe(C,Cell),not assi(1). [1:8]
@@ -166,6 +168,7 @@ celleOccupate(N):-#count{C:cell(Card,C),Card!=53}=N.
 
 
 								%liv 7
+
 
 % dal momento in cui decido di spostare nelle celle vuote devo preferire gli spostamenti che liberano assi
 :~ assi(1), spostabileInCe(Card),column(Card,P,Column),colonnaConAssi(Column,Position),Differenza=P-Position,Costo=7-Differenza. [Costo:7]	
